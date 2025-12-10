@@ -21,7 +21,7 @@ app.use(cookieParser());
 // Module Route
 moduleRoute.forEach(item => app.use(`/api/v1${item.path}` , item.routes));
 
-app.use("/" , (req : Request , res : Response) =>{
+app.get("/" , (req : Request , res : Response) =>{
     res.status(200).json({
         success : true,
         message : "Server runing success"
