@@ -5,5 +5,6 @@ const user_controller_1 = require("./user.controller");
 const UserRouter = (0, express_1.Router)();
 UserRouter.post("/signIn", user_controller_1.UserController.SingIn);
 UserRouter.post("/signUp", user_controller_1.UserController.SignUp);
+UserRouter.patch("/update/user/Profile/:id", user_controller_1.UserController.updateUserProfile);
 exports.default = UserRouter;
 //# sourceMappingURL=user.router.js.map
