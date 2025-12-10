@@ -1,6 +1,7 @@
-import { Router } from "express"
 import UserRouter from "../module/user/user.router";
 import CourseRouter from "../module/course/course.router";
+import CourseModuleRouter from "../module/courseMilestone/courseMilestone.router";
+import LessionRouter from "../module/courseLesson/courseLesson.router";
 
 
 
@@ -12,6 +13,16 @@ export const moduleRoute = [
     {
         path: "/course",
         routes: CourseRouter
-    }
+    },
+    
+    {
+        path: "/module",
+        routes: CourseModuleRouter
+    },
+    {
+        path: "/lession",
+        routes: LessionRouter
+    },
+
 ];
 
