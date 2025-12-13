@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { LessionController } from "./courseLesson.controller";
 import { multerUpload } from "../../config/multer.config";
+import { checkAuths } from "../../middleware/protect";
 
 const LessionRouter = Router();
 
@@ -13,6 +14,9 @@ LessionRouter.post("/create", multerUpload.fields([
     { name: 'image', maxCount: 1 },  // চিত্র ফাইলের জন্য
 ]), LessionController.createLesson);
 
+
+LessionRouter.patch("/update/lession/info", checkAuths(), LessionController.updateLessonContent);
+LessionRouter.patch("/delete/lession", checkAuths(), LessionController.deleteLesson);
 
 
 export default LessionRouter;

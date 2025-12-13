@@ -28,7 +28,12 @@ const createCourse = async (payload) => {
     const course = await course_model_1.Course.create(payload);
     return course;
 };
+const updateCourse = async (courseId, payload) => {
+    const updatedCourse = await course_model_1.Course.findByIdAndUpdate(courseId, { $set: payload }, { new: true, runValidators: true });
+    return updatedCourse;
+};
 exports.courseServices = {
-    createCourse
+    createCourse,
+    updateCourse
 };
 //# sourceMappingURL=course.service.js.map

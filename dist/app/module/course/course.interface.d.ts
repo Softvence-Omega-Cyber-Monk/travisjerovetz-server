@@ -33,4 +33,19 @@ export interface ICourse {
     instructorProfile: string;
     modules: IModule[];
 }
+export interface IUpCourse {
+    _id: Types.ObjectId;
+    title: string;
+    description: string;
+    thumbnail: string;
+    category: string;
+    prices: number;
+    courseTag: string;
+    courseStatus: string;
+    whatsUserLearn: string[];
+    instructorName?: string;
+    instructorTitle?: string;
+    instructorDescription?: string;
+    instructorProfile?: string;
+}
 //# sourceMappingURL=course.interface.d.ts.map

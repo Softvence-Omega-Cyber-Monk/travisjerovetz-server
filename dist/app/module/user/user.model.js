@@ -40,9 +40,20 @@ const userSchema = new mongoose_1.Schema({
         type: Boolean,
         default: true,
     },
+    enrollCourse: [
+        {
+            courseId: {
+                type: String
+            },
+            date: {
+                type: Date,
+                default: Date.now
+            }
+        }
+    ],
     lastLogin: {
         type: Date,
-    },
+    }
 }, {
     timestamps: true,
 });

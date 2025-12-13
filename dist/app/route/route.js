@@ -8,6 +8,8 @@ const user_router_1 = __importDefault(require("../module/user/user.router"));
 const course_router_1 = __importDefault(require("../module/course/course.router"));
 const courseMilestone_router_1 = __importDefault(require("../module/courseMilestone/courseMilestone.router"));
 const courseLesson_router_1 = __importDefault(require("../module/courseLesson/courseLesson.router"));
+const UserCourseProgress_router_1 = __importDefault(require("../module/userCourseProgress/UserCourseProgress.router"));
+const enroll_router_1 = __importDefault(require("../module/CourseEnroll/enroll.router"));
 exports.moduleRoute = [
     {
         path: "/user",
@@ -25,5 +27,13 @@ exports.moduleRoute = [
         path: "/lession",
         routes: courseLesson_router_1.default
     },
+    {
+        path: "/progress",
+        routes: UserCourseProgress_router_1.default
+    },
+    {
+        path: "/enrolCourse",
+        routes: enroll_router_1.default
+    }
 ];
 //# sourceMappingURL=route.js.map

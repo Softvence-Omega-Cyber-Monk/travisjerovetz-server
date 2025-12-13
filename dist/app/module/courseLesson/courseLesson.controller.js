@@ -9,6 +9,7 @@ const AppError_1 = __importDefault(require("../../utils/AppError"));
 const sendResponse_1 = require("../../utils/sendResponse");
 const course_model_1 = require("../course/course.model");
 const courseLesson_interface_1 = require("./courseLesson.interface");
+const mongoose_1 = require("mongoose");
 const createLesson = (0, catchAsync_1.default)(async (req, res) => {
     const files = req.files;
     if (!req.body.data) {
@@ -65,7 +66,72 @@ const createLesson = (0, catchAsync_1.default)(async (req, res) => {
         data: course,
     });
 });
+const updateLessonContent = (0, catchAsync_1.default)(async (req, res) => {
+    const { lessonName, article, duration, courseId, moduleId, lessonId } = req.body;
+    if (!courseId || !moduleId || !lessonId) {
+        throw new AppError_1.default(400, "courseId, moduleId and lessonId are required");
+    }
+    if (!mongoose_1.Types.ObjectId.isValid(courseId) || !mongoose_1.Types.ObjectId.isValid(moduleId) || !mongoose_1.Types.ObjectId.isValid(lessonId)) {
+        throw new AppError_1.default(400, "Invalid courseId, moduleId or lessonId");
+    }
+    const course = await course_model_1.Course.findById(courseId);
+    if (!course) {
+        throw new AppError_1.default(404, "Course not found");
+    }
+    const module = course.modules.find((m) => m._id && m._id.toString() === moduleId);
+    if (!module) {
+        throw new AppError_1.default(404, "Module not found");
+    }
+    const lesson = module.lessons.find((l) => l._id && l._id.toString() === lessonId);
+    if (!lesson) {
+        throw new AppError_1.default(404, "Lesson not found");
+    }
+    if (lessonName !== undefined && lessonName !== "") {
+        lesson.lessonName = lessonName;
+    }
+    if (article !== undefined && article !== "") {
+        lesson.article = article;
+    }
+    if (duration !== undefined && duration !== null) {
+        lesson.duration = duration;
+    }
+    await course.save();
+    res.status(200).json({
+        success: true,
+        message: "Lesson updated successfully",
+        data: lesson,
+    });
+});
+const deleteLesson = (0, catchAsync_1.default)(async (req, res) => {
+    const { courseId, moduleId, lessonId } = req.body;
+    if (!courseId || !moduleId || !lessonId) {
+        throw new AppError_1.default(400, "courseId, moduleId and lessonId are required");
+    }
+    if (!mongoose_1.Types.ObjectId.isValid(courseId) || !mongoose_1.Types.ObjectId.isValid(moduleId) || !mongoose_1.Types.ObjectId.isValid(lessonId)) {
+        throw new AppError_1.default(400, "Invalid courseId, moduleId or lessonId");
+    }
+    const course = await course_model_1.Course.findById(courseId);
+    if (!course) {
+        throw new AppError_1.default(404, "Course not found");
+    }
+    const module = course.modules.find((m) => m._id && m._id.toString() === moduleId);
+    if (!module) {
+        throw new AppError_1.default(404, "Module not found");
+    }
+    const lessonIndex = module.lessons.findIndex((l) => l._id && l._id.toString() === lessonId);
+    if (lessonIndex === -1) {
+        throw new AppError_1.default(404, "Lesson not found");
+    }
+    module.lessons.splice(lessonIndex, 1);
+    await course.save();
+    res.status(200).json({
+        success: true,
+        message: "Lesson deleted successfully",
+    });
+});
 exports.LessionController = {
-    createLesson
+    createLesson,
+    updateLessonContent,
+    deleteLesson
 };
 //# sourceMappingURL=courseLesson.controller.js.map

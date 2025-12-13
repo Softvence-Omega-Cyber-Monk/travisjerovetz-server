@@ -70,6 +70,7 @@ const globalErrorhandler = (err, req, res, next) => {
     res.status(statusCode).json({
         success: false,
         statusCode: statusCode,
+        message,
         errors: errorStore,
         stack: env_1.envVers.DEV_ENVIRONMENT === "development" ? err.stack : null,
         err: env_1.envVers.DEV_ENVIRONMENT === "development" ? err : null

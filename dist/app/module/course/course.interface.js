@@ -28,4 +28,5 @@ var ICourseStatus;
     ICourseStatus["Published"] = "Published";
     ICourseStatus["Draft"] = "Draft";
 })(ICourseStatus || (exports.ICourseStatus = ICourseStatus = {}));
+;
 //# sourceMappingURL=course.interface.js.map
