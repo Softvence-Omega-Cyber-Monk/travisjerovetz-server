@@ -5,6 +5,7 @@ import { courseServices } from "./course.service";
 import AppError from "../../utils/AppError";
 import { Course } from "./course.model";
 import { QueryBuilder } from "../../utils/QueryBuilder";
+import { UserCourseProgress } from "../userCourseProgress/UserCourseProgress.model";
 
 
 const createCourse = catchAsync(async (req, res, next: NextFunction) => {
@@ -32,71 +33,132 @@ const createCourse = catchAsync(async (req, res, next: NextFunction) => {
     });
 });
 
+const getCourseWithProgress = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
 
-const getCourseProgress = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-    const courseId = req.params.courseId;
+    const { userId, courseId } = req.params;
 
-    if (!courseId) {
-        throw new AppError(400, "Course ID is required");
+    if (!userId || !courseId) {
+        throw new AppError(400, "userId & courseId are required");
     }
 
-    // 1. Course find kora
     const course = await Course.findById(courseId);
+    if (!course) throw new AppError(404, "Course not found");
 
-    if (!course) {
-        throw new AppError(404, "Course not found");
-    }
+    const progress = await UserCourseProgress.findOne({ userId, courseId });
+    if (!progress) throw new AppError(404, "User progress not found");
 
-    let totalLessons = 0;
-    let totalCompletedLessons = 0;
-    let totalCourseDuration = 0;
-    const totalModules = course.modules.length;
-
-    // 2. Prottek module er progress calculate kora
-    const modulesWithProgress = course.modules.map(module => {
-        const moduleTotal = module.lessons.length;
-        const moduleCompleted = module.lessons.filter(lesson => lesson.isCompleted).length;
-
-
-        // Module duration
-        const moduleDuration = module.lessons.reduce((sum, lesson) => sum + (lesson.duration || 0), 0);
-
-        const moduleProgress = moduleTotal === 0 ? 0 : (moduleCompleted / moduleTotal) * 100;
-
-        totalLessons += moduleTotal;
-        totalCompletedLessons += moduleCompleted;
-        totalCourseDuration += moduleDuration;
-
-        // Plain object return kora
-        return {
-            _id: module._id,
-            moduleName: module.moduleName,
-            lessons: module.lessons,
-            totalLessons: moduleTotal,
-            completedLessons: moduleCompleted,
-            moduleProgress: parseFloat(moduleProgress.toFixed(2)),
-            moduleDuration,
-        };
+    // Make completed lesson IDs string array
+    progress.modules.forEach(m => {
+        m.completedLessons = m.completedLessons.map(l => l.toString()) as any;
     });
 
-    // 3. Puro course progress
-    const courseProgress = totalLessons === 0 ? 0 : (totalCompletedLessons / totalLessons) * 100;
+    // ----------------------------
+    // MODULE WISE PROGRESS
+    // ----------------------------
 
-    // 4. Full course data return kora
-    res.status(200).json({
-        status: "success",
+    const modules = course.modules
+        .filter((module) => module && module._id)
+        .map((module) => {
+            const moduleId = module._id!.toString();
+
+            const userModule = progress.modules.find(
+                (m) => m.moduleId.toString() === moduleId
+            );
+
+            const totalLessons = module.lessons?.length || 0;
+            const completedLessons = userModule?.completedLessons.length || 0;
+            const pendingLessons = totalLessons - completedLessons;
+
+            const moduleProgress =
+                totalLessons > 0
+                    ? Math.round((completedLessons / totalLessons) * 100)
+                    : 0;
+
+            // MODULE DURATION
+            const moduleDuration = module.lessons.reduce(
+                (acc, lesson) => acc + (lesson.duration || 0),
+                0
+            );
+
+            // LESSON COMPLETION FLAG
+            const lessonsWithStatus = module.lessons.map((lesson) => {
+                const lessonId = lesson._id?.toString() || "";
+
+                const lessonObj =
+                    typeof (lesson as any).toObject === "function"
+                        ? (lesson as any).toObject()
+                        : (lesson as any)._doc;
+
+                // Convert completed lessons to string array
+                const completedLessonIds = (userModule?.completedLessons || []).map(
+                    (id) => id.toString()
+                );
+
+                return {
+                    ...lessonObj,
+                    completedLesson: completedLessonIds.includes(lessonId),
+                };
+            });
+
+            return {
+                moduleId: module._id,
+                moduleName: module.moduleName,
+                totalLessons,
+                completedLessons,
+                pendingLessons,
+                progress: moduleProgress,
+                duration: moduleDuration, // <-- add module duration
+                lessons: lessonsWithStatus,
+            };
+        });
+
+    // ----------------------------
+    // COURSE SUMMARY PROGRESS
+    // ----------------------------
+
+    const totalLessonsInCourse = modules.reduce(
+        (acc, m) => acc + m.totalLessons,
+        0
+    );
+
+    const completedLessonsInCourse = modules.reduce(
+        (acc, m) => acc + m.completedLessons,
+        0
+    );
+
+    const pendingLessonsInCourse = totalLessonsInCourse - completedLessonsInCourse;
+
+    const courseProgress =
+        totalLessonsInCourse > 0
+            ? Math.round((completedLessonsInCourse / totalLessonsInCourse) * 100)
+            : 0;
+
+    // CALCULATE TOTAL COURSE DURATION
+    const totalCourseDuration = modules.reduce(
+        (acc, m) => acc + (m.duration || 0),
+        0
+    );
+
+    sendResponse(res, {
+        success: true,
+        statusCode: 200,
+        message: "Course finded success",
         data: {
-            ...course.toObject(),
-            totalModules,
-            totalLessons,
-            completedLessons: totalCompletedLessons,
-            totalCourseDuration, // puro course er duration
-            courseProgress: parseFloat(courseProgress.toFixed(2)),
-            modules: modulesWithProgress,
-        },
-    });
+            courseInfo: {
+                ...course.toObject(),
+                modules,
+                totalDuration: totalCourseDuration // <-- add total course duration
+            },
+            courseSummary: {
+                totalLessons: totalLessonsInCourse,
+                completedLessons: completedLessonsInCourse,
+                pendingLessons: pendingLessonsInCourse,
+                progress: courseProgress,
+                totalDuration: totalCourseDuration // <-- add total duration summary
+            },
+        }
+    })
 });
-
 
 const getAllCourse = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
 
@@ -133,6 +195,6 @@ const getAllCourse = catchAsync(async (req: Request, res: Response, next: NextFu
 
 export const courseController = {
     createCourse,
-    getCourseProgress,
+    getCourseWithProgress,
     getAllCourse
 }

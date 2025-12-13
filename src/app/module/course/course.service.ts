@@ -1,4 +1,5 @@
 import AppError from "../../utils/AppError";
+import { UserCourseProgress } from "../userCourseProgress/UserCourseProgress.model";
 import { ICourse } from "./course.interface";
 import { Course } from "./course.model";
 
@@ -26,6 +27,7 @@ const createCourse = async (payload: ICourse) => {
     const course = await Course.create(payload);
     return course;
 };
+
 
 
 

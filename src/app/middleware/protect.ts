@@ -26,11 +26,6 @@
 //         throw new AppError(StatusCodes.NOT_FOUND, "User not found!");
 //     }
 
-//     if (existUser.isActive || existUser.isDeleted || existUser.isVerifid) {
-//         if (validationUser.payload.role === Role.USER || validationUser.payload.role === Role.GUIDE) {
-//             throw new AppError(StatusCodes.FORBIDDEN, "You are not authorized!")
-//         }
-//     }
 
 //     if (!auths.includes(validationUser.payload.role)) {
 //         throw new AppError(401, "You are not permited access this route!");
