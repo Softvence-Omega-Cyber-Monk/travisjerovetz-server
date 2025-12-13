@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 export declare const UserCourseProgress: mongoose.Model<{
-    userId: mongoose.Types.ObjectId;
     courseId: mongoose.Types.ObjectId;
+    userId: mongoose.Types.ObjectId;
     courseProgress: number;
     modules: mongoose.Types.DocumentArray<{
         moduleId: mongoose.Types.ObjectId;
@@ -17,8 +17,8 @@ export declare const UserCourseProgress: mongoose.Model<{
         completedLessons: mongoose.Types.ObjectId[];
     }>;
 } & mongoose.DefaultTimestampProps, {}, {}, {}, mongoose.Document<unknown, {}, {
-    userId: mongoose.Types.ObjectId;
     courseId: mongoose.Types.ObjectId;
+    userId: mongoose.Types.ObjectId;
     courseProgress: number;
     modules: mongoose.Types.DocumentArray<{
         moduleId: mongoose.Types.ObjectId;
@@ -36,8 +36,8 @@ export declare const UserCourseProgress: mongoose.Model<{
 } & mongoose.DefaultTimestampProps, {}, {
     timestamps: true;
 }> & {
-    userId: mongoose.Types.ObjectId;
     courseId: mongoose.Types.ObjectId;
+    userId: mongoose.Types.ObjectId;
     courseProgress: number;
     modules: mongoose.Types.DocumentArray<{
         moduleId: mongoose.Types.ObjectId;
@@ -59,8 +59,8 @@ export declare const UserCourseProgress: mongoose.Model<{
 }, mongoose.Schema<any, mongoose.Model<any, any, any, any, any, any>, {}, {}, {}, {}, {
     timestamps: true;
 }, {
-    userId: mongoose.Types.ObjectId;
     courseId: mongoose.Types.ObjectId;
+    userId: mongoose.Types.ObjectId;
     courseProgress: number;
     modules: mongoose.Types.DocumentArray<{
         moduleId: mongoose.Types.ObjectId;
@@ -76,8 +76,8 @@ export declare const UserCourseProgress: mongoose.Model<{
         completedLessons: mongoose.Types.ObjectId[];
     }>;
 } & mongoose.DefaultTimestampProps, mongoose.Document<unknown, {}, mongoose.FlatRecord<{
-    userId: mongoose.Types.ObjectId;
     courseId: mongoose.Types.ObjectId;
+    userId: mongoose.Types.ObjectId;
     courseProgress: number;
     modules: mongoose.Types.DocumentArray<{
         moduleId: mongoose.Types.ObjectId;
@@ -95,8 +95,8 @@ export declare const UserCourseProgress: mongoose.Model<{
 } & mongoose.DefaultTimestampProps>, {}, mongoose.ResolveSchemaOptions<{
     timestamps: true;
 }>> & mongoose.FlatRecord<{
-    userId: mongoose.Types.ObjectId;
     courseId: mongoose.Types.ObjectId;
+    userId: mongoose.Types.ObjectId;
     courseProgress: number;
     modules: mongoose.Types.DocumentArray<{
         moduleId: mongoose.Types.ObjectId;

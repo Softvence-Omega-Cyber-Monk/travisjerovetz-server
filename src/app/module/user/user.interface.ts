@@ -1,5 +1,10 @@
 import { Types } from "mongoose";
 
+export interface IEnrollCourse {
+    courseId: Types.ObjectId,
+    date?: Date
+}
+
 export interface IUser {
     _id: Types.ObjectId;
     fullName: string;
@@ -11,6 +16,7 @@ export interface IUser {
     dateOfBirth?: Date;
     role: string;
     isActive: boolean;
+    enrollCourse: IEnrollCourse[],
     lastLogin?: Date;
     createdAt?: Date;
     updatedAt?: Date;

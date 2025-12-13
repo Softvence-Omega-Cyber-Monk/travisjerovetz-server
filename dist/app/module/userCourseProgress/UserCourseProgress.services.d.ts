@@ -1,7 +1,7 @@
 export declare const UserCourseProgressServices: {
     createProgressForUser: (userId: string, courseId: string) => Promise<import("mongoose").Document<unknown, {}, {
-        userId: import("mongoose").Types.ObjectId;
         courseId: import("mongoose").Types.ObjectId;
+        userId: import("mongoose").Types.ObjectId;
         courseProgress: number;
         modules: import("mongoose").Types.DocumentArray<{
             moduleId: import("mongoose").Types.ObjectId;
@@ -19,8 +19,8 @@ export declare const UserCourseProgressServices: {
     } & import("mongoose").DefaultTimestampProps, {}, {
         timestamps: true;
     }> & {
-        userId: import("mongoose").Types.ObjectId;
         courseId: import("mongoose").Types.ObjectId;
+        userId: import("mongoose").Types.ObjectId;
         courseProgress: number;
         modules: import("mongoose").Types.DocumentArray<{
             moduleId: import("mongoose").Types.ObjectId;
@@ -57,8 +57,8 @@ export declare const UserCourseProgressServices: {
         };
     }>;
     completeLesson: (userId: string, courseId: string, lessonId: string) => Promise<import("mongoose").Document<unknown, {}, {
-        userId: import("mongoose").Types.ObjectId;
         courseId: import("mongoose").Types.ObjectId;
+        userId: import("mongoose").Types.ObjectId;
         courseProgress: number;
         modules: import("mongoose").Types.DocumentArray<{
             moduleId: import("mongoose").Types.ObjectId;
@@ -76,8 +76,8 @@ export declare const UserCourseProgressServices: {
     } & import("mongoose").DefaultTimestampProps, {}, {
         timestamps: true;
     }> & {
-        userId: import("mongoose").Types.ObjectId;
         courseId: import("mongoose").Types.ObjectId;
+        userId: import("mongoose").Types.ObjectId;
         courseProgress: number;
         modules: import("mongoose").Types.DocumentArray<{
             moduleId: import("mongoose").Types.ObjectId;

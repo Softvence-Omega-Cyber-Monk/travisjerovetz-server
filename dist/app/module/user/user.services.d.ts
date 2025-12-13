@@ -10,6 +10,7 @@ export declare const UserServices: {
         dateOfBirth?: Date;
         role: string;
         isActive: boolean;
+        enrollCourse: import("./user.interface").IEnrollCourse[];
         lastLogin?: Date;
         createdAt?: Date;
         updatedAt?: Date;
@@ -33,6 +34,7 @@ export declare const UserServices: {
             dateOfBirth?: Date;
             role: string;
             isActive: boolean;
+            enrollCourse: import("./user.interface").IEnrollCourse[];
             lastLogin?: Date;
             createdAt?: Date;
             updatedAt?: Date;

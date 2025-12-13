@@ -19,3 +19,5 @@ CourseModuleRouter.patch("/update/moduleName", checkAuths(), milestoneContainer.
 CourseModuleRouter.delete("/delete", checkAuths(), milestoneContainer.deleteModule);
 
 export default CourseModuleRouter;
+
+
