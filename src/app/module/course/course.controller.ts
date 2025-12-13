@@ -6,6 +6,8 @@ import AppError from "../../utils/AppError";
 import { Course } from "./course.model";
 import { QueryBuilder } from "../../utils/QueryBuilder";
 import { UserCourseProgress } from "../userCourseProgress/UserCourseProgress.model";
+import { ICourse, IUpCourse } from "./course.interface";
+import { Types } from "mongoose";
 
 
 const createCourse = catchAsync(async (req, res, next: NextFunction) => {
@@ -35,8 +37,8 @@ const createCourse = catchAsync(async (req, res, next: NextFunction) => {
 
 const getCourseWithProgress = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
 
-    const { userId, courseId } = req.params;
-
+    const { courseId } = req.params;
+    const userId = req.authUser?.userId;
     if (!userId || !courseId) {
         throw new AppError(400, "userId & courseId are required");
     }
@@ -193,8 +195,30 @@ const getAllCourse = catchAsync(async (req: Request, res: Response, next: NextFu
     });
 });
 
+const updateCourseInformation = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    const courseId = req.body.courseId;
+    const payload: Partial<IUpCourse> = req.body;
+
+    if (!courseId) {
+        throw new AppError(404, "Course id must be required");
+    }
+
+    const result = await courseServices.updateCourse(new Types.ObjectId(courseId), payload);
+
+    if (!result) throw new AppError(404, "Course not found");
+
+    sendResponse(res, {
+        success: true,
+        statusCode: 200,
+        message: "Course updated successfully",
+        data: result,
+    });
+});
+
+
 export const courseController = {
     createCourse,
     getCourseWithProgress,
-    getAllCourse
+    getAllCourse,
+    updateCourseInformation
 }

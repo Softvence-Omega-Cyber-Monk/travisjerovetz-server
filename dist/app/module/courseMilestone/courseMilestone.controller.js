@@ -9,6 +9,7 @@ const courseLesson_interface_1 = require("../courseLesson/courseLesson.interface
 const AppError_1 = __importDefault(require("../../utils/AppError"));
 const sendResponse_1 = require("../../utils/sendResponse");
 const course_model_1 = require("../course/course.model");
+const mongoose_1 = require("mongoose");
 // const createMilestone = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
 //     // TypeScript fix: force type cast as object with File[] values
 //     const files = req.files as { [fieldname: string]: Express.Multer.File[] };
@@ -86,7 +87,61 @@ const createMilestone = (0, catchAsync_1.default)(async (req, res, next) => {
         data: course,
     });
 });
+const updateModuleName = (0, catchAsync_1.default)(async (req, res, next) => {
+    const { courseId, moduleId, moduleName } = req.body;
+    if (!courseId || !moduleId || !moduleName) {
+        throw new AppError_1.default(400, "courseId, moduleId and moduleName are required");
+    }
+    if (!mongoose_1.Types.ObjectId.isValid(courseId) || !mongoose_1.Types.ObjectId.isValid(moduleId)) {
+        throw new AppError_1.default(400, "Invalid courseId or moduleId");
+    }
+    const course = await course_model_1.Course.findById(courseId);
+    if (!course) {
+        throw new AppError_1.default(404, "Course not found");
+    }
+    const module = course.modules.find((m) => m._id && m._id.toString() === moduleId);
+    if (!module) {
+        throw new AppError_1.default(404, "Module not found");
+    }
+    module.moduleName = moduleName;
+    await course.save();
+    (0, sendResponse_1.sendResponse)(res, {
+        success: true,
+        statusCode: 200,
+        message: "Module Name Updated",
+        data: module
+    });
+});
+const deleteModule = (0, catchAsync_1.default)(async (req, res) => {
+    const { courseId, moduleId } = req.body;
+    // Validation
+    if (!courseId || !moduleId) {
+        throw new AppError_1.default(400, "courseId and moduleId are required");
+    }
+    if (!mongoose_1.Types.ObjectId.isValid(courseId) || !mongoose_1.Types.ObjectId.isValid(moduleId)) {
+        throw new AppError_1.default(400, "Invalid courseId or moduleId");
+    }
+    // Find course
+    const course = await course_model_1.Course.findById(courseId);
+    if (!course) {
+        throw new AppError_1.default(404, "Course not found");
+    }
+    // Find module index
+    const moduleIndex = course.modules.findIndex((m) => m._id && m._id.toString() === moduleId);
+    if (moduleIndex === -1) {
+        throw new AppError_1.default(404, "Module not found");
+    }
+    // ✅ Delete module
+    course.modules.splice(moduleIndex, 1);
+    await course.save();
+    res.status(200).json({
+        success: true,
+        message: "Module deleted successfully",
+    });
+});
 exports.milestoneContainer = {
-    createMilestone
+    createMilestone,
+    updateModuleName,
+    deleteModule
 };
 //# sourceMappingURL=courseMilestone.controller.js.map

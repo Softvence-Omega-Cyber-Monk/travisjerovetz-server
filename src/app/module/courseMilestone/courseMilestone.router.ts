@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { multerUpload } from "../../config/multer.config";
 import { milestoneContainer } from "./courseMilestone.controller";
+import { checkAuths } from "../../middleware/protect";
 
 
 const CourseModuleRouter = Router();
@@ -14,6 +15,7 @@ CourseModuleRouter.post('/create', multerUpload.fields([
     { name: 'image', maxCount: 1 },  // চিত্র ফাইলের জন্য
 ]), milestoneContainer.createMilestone);
 
-
+CourseModuleRouter.patch("/update/moduleName", checkAuths(), milestoneContainer.updateModuleName);
+CourseModuleRouter.delete("/delete", checkAuths(), milestoneContainer.deleteModule);
 
 export default CourseModuleRouter;

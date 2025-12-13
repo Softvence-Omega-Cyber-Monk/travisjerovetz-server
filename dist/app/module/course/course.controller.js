@@ -11,6 +11,7 @@ const AppError_1 = __importDefault(require("../../utils/AppError"));
 const course_model_1 = require("./course.model");
 const QueryBuilder_1 = require("../../utils/QueryBuilder");
 const UserCourseProgress_model_1 = require("../userCourseProgress/UserCourseProgress.model");
+const mongoose_1 = require("mongoose");
 const createCourse = (0, catchAsync_1.default)(async (req, res, next) => {
     const bodyData = req.body.data ? JSON.parse(req.body.data) : {};
     const files = req.files;
@@ -28,7 +29,8 @@ const createCourse = (0, catchAsync_1.default)(async (req, res, next) => {
     });
 });
 const getCourseWithProgress = (0, catchAsync_1.default)(async (req, res, next) => {
-    const { userId, courseId } = req.params;
+    const { courseId } = req.params;
+    const userId = req.authUser?.userId;
     if (!userId || !courseId) {
         throw new AppError_1.default(400, "userId & courseId are required");
     }
@@ -139,9 +141,26 @@ const getAllCourse = (0, catchAsync_1.default)(async (req, res, next) => {
         meta,
     });
 });
+const updateCourseInformation = (0, catchAsync_1.default)(async (req, res, next) => {
+    const courseId = req.body.courseId;
+    const payload = req.body;
+    if (!courseId) {
+        throw new AppError_1.default(404, "Course id must be required");
+    }
+    const result = await course_service_1.courseServices.updateCourse(new mongoose_1.Types.ObjectId(courseId), payload);
+    if (!result)
+        throw new AppError_1.default(404, "Course not found");
+    (0, sendResponse_1.sendResponse)(res, {
+        success: true,
+        statusCode: 200,
+        message: "Course updated successfully",
+        data: result,
+    });
+});
 exports.courseController = {
     createCourse,
     getCourseWithProgress,
-    getAllCourse
+    getAllCourse,
+    updateCourseInformation
 };
 //# sourceMappingURL=course.controller.js.map

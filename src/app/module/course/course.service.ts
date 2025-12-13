@@ -1,6 +1,7 @@
+import { Types } from "mongoose";
 import AppError from "../../utils/AppError";
 import { UserCourseProgress } from "../userCourseProgress/UserCourseProgress.model";
-import { ICourse } from "./course.interface";
+import { ICourse, IUpCourse } from "./course.interface";
 import { Course } from "./course.model";
 
 const createCourse = async (payload: ICourse) => {
@@ -28,9 +29,18 @@ const createCourse = async (payload: ICourse) => {
     return course;
 };
 
+const updateCourse = async (courseId: Types.ObjectId, payload: Partial<IUpCourse>) => {
+    const updatedCourse = await Course.findByIdAndUpdate(
+        courseId,
+        { $set: payload },
+        { new: true, runValidators: true}
+    );
 
+    return updatedCourse;
+};
 
 
 export const courseServices = {
-    createCourse
+    createCourse,
+    updateCourse
 }
