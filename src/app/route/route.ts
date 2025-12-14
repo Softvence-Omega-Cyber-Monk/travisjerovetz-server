@@ -4,6 +4,7 @@ import CourseModuleRouter from "../module/courseMilestone/courseMilestone.router
 import LessionRouter from "../module/courseLesson/courseLesson.router";
 import userCourseProgressRouter from "../module/userCourseProgress/UserCourseProgress.router";
 import enrollRouter from "../module/CourseEnroll/enroll.router";
+import analyticsRouter from "../module/analytics/analytics.route";
 
 
 
@@ -32,6 +33,10 @@ export const moduleRoute = [
     {
         path: "/enrolCourse",
         routes: enrollRouter
+    },
+    {
+        path: "/analytics",
+        routes: analyticsRouter
     }
 ];
 
