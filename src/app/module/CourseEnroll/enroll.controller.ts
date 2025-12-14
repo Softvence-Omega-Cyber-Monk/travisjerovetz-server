@@ -23,8 +23,7 @@ const enrollCourse = catchAsync(async (req: Request, res: Response, next: NextFu
         statusCode: 201,
         message: `${courseName} enrollment successfully`,
         data: result
-    })
-
+    });
 });
 
 
