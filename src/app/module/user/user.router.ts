@@ -8,6 +8,6 @@ const UserRouter = Router();
 UserRouter.post("/signIn", UserController.SingIn);
 UserRouter.post("/signUp", UserController.SignUp);
 UserRouter.patch("/update/user/Profile/:id", checkAuths(), UserController.updateUserProfile);
-
+UserRouter.get("/refreshToken" ,  UserController.getAccessTokenUseRefreshToken)
 
 export default UserRouter;
