@@ -6,12 +6,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importDefault(require("mongoose"));
 const env_1 = require("./app/config/env");
 const app_1 = require("./app");
+const seedAdmin_1 = require("./app/config/seedAdmin");
 let server;
 const boostServer = async () => {
     try {
         await mongoose_1.default.connect(env_1.envVers.MONGO_URI);
         console.log("MongoDb Connected Successfully");
-        server = app_1.app.listen(env_1.envVers.PORT, () => {
+        await (0, seedAdmin_1.seedAdmin)();
+        server = app_1.app.listen(env_1.envVers.PORT, async () => {
             console.log("Server runing successfully");
             console.log(`http://localhost:${env_1.envVers.PORT}`);
         });

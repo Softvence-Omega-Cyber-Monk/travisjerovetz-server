@@ -4,6 +4,11 @@ interface IEnv {
     DEV_ENVIRONMENT: string;
     ACCESS_SECRATE: string;
     REFRESH_SECRATE: string;
+    ADMIN: {
+        ADMIN_EMAIL: string;
+        ADMIN_PASSWORD: string;
+        ADMIN_NAME: string;
+    };
     CLOUDINARY: {
         CLOUDINARY_API_SECRATE: string;
         CLOUDINARY_API_KEY: string;
