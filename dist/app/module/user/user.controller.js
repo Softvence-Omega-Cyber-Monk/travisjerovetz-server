@@ -9,6 +9,7 @@ const user_services_1 = require("./user.services");
 const sendResponse_1 = require("../../utils/sendResponse");
 const AppError_1 = __importDefault(require("../../utils/AppError"));
 const user_model_1 = require("./user.model");
+const createAccessTokenUseRefreshToken_1 = require("../../utils/createAccessTokenUseRefreshToken");
 const SignUp = (0, catchAsync_1.default)(async (req, res, next) => {
     console.log(req.body);
     const result = await user_services_1.UserServices.signUp(req.body);
@@ -59,9 +60,20 @@ const updateUserProfile = (0, catchAsync_1.default)(async (req, res, next) => {
         data: updatedUser,
     });
 });
+const getAccessTokenUseRefreshToken = (0, catchAsync_1.default)(async (req, res, next) => {
+    const refreshToken = req.headers?.authorization;
+    const result = await (0, createAccessTokenUseRefreshToken_1.createAccessTokenUseRefreshToken)(refreshToken);
+    (0, sendResponse_1.sendResponse)(res, {
+        success: true,
+        statusCode: 200,
+        message: "Token refreshed successfully",
+        data: result
+    });
+});
 exports.UserController = {
     SignUp,
     SingIn,
-    updateUserProfile
+    updateUserProfile,
+    getAccessTokenUseRefreshToken
 };
 //# sourceMappingURL=user.controller.js.map
