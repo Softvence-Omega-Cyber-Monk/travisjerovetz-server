@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import { Server } from "http"
 import { envVers } from "./app/config/env";
 import { app } from "./app";
+import { seedAdmin } from "./app/config/seedAdmin";
 
 
 let server: Server;
@@ -11,9 +12,11 @@ const boostServer = async () => {
     try {
         await mongoose.connect(envVers.MONGO_URI);
         console.log("MongoDb Connected Successfully");
-        server = app.listen(envVers.PORT, () => {
+        await seedAdmin();
+        server = app.listen(envVers.PORT, async () => {
             console.log("Server runing successfully");
             console.log(`http://localhost:${envVers.PORT}`);
+
         });
 
     } catch (error: any) {
