@@ -5,5 +5,6 @@ export declare const courseController: {
     getAllCourse: (req: Request, res: Response, next: NextFunction) => void;
     updateCourseInformation: (req: Request, res: Response, next: NextFunction) => void;
     getSingleCourse: (req: Request, res: Response, next: NextFunction) => void;
+    deleteCourse: (req: Request, res: Response, next: NextFunction) => void;
 };
 //# sourceMappingURL=course.controller.d.ts.map

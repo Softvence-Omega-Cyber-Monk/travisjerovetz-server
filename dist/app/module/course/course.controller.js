@@ -169,11 +169,24 @@ const getSingleCourse = (0, catchAsync_1.default)(async (req, res, next) => {
         data: result
     });
 });
+const deleteCourse = (0, catchAsync_1.default)(async (req, res, next) => {
+    const courseId = req.params.courseId;
+    const result = await course_model_1.Course.findByIdAndDelete(courseId);
+    if (!result)
+        throw new AppError_1.default(404, "Course Not Found");
+    (0, sendResponse_1.sendResponse)(res, {
+        success: true,
+        statusCode: 200,
+        message: "Course Deleted successfully",
+        data: null
+    });
+});
 exports.courseController = {
     createCourse,
     getCourseWithProgress,
     getAllCourse,
     updateCourseInformation,
-    getSingleCourse
+    getSingleCourse,
+    deleteCourse
 };
 //# sourceMappingURL=course.controller.js.map
