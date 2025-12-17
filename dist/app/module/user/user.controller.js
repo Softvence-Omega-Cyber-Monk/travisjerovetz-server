@@ -71,7 +71,7 @@ const getAllUser = (0, catchAsync_1.default)(async (req, res, next) => {
     });
 });
 const getMe = (0, catchAsync_1.default)(async (req, res, next) => {
-    const userId = req.authUser._id;
+    const userId = req.authUser.userId;
     const result = await user_model_1.User.findById(userId);
     if (!result)
         throw new AppError_1.default(404, "User Not found");
@@ -92,12 +92,25 @@ const getAccessTokenUseRefreshToken = (0, catchAsync_1.default)(async (req, res,
         data: result
     });
 });
+const deleteUser = (0, catchAsync_1.default)(async (req, res, next) => {
+    const userId = req.params.userId;
+    const result = await user_model_1.User.findByIdAndDelete(userId);
+    if (!result)
+        throw new AppError_1.default(404, "User not found");
+    (0, sendResponse_1.sendResponse)(res, {
+        success: true,
+        statusCode: 200,
+        message: "User Deleted successfully",
+        data: null
+    });
+});
 exports.UserController = {
     SignUp,
     SingIn,
     updateUserProfile,
     getAccessTokenUseRefreshToken,
     getAllUser,
-    getMe
+    getMe,
+    deleteUser
 };
 //# sourceMappingURL=user.controller.js.map
