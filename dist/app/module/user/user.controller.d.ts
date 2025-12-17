@@ -4,5 +4,6 @@ export declare const UserController: {
     SingIn: (req: Request, res: Response, next: NextFunction) => void;
     updateUserProfile: (req: Request, res: Response, next: NextFunction) => void;
     getAccessTokenUseRefreshToken: (req: Request, res: Response, next: NextFunction) => void;
+    getAllUser: (req: Request, res: Response, next: NextFunction) => void;
 };
 //# sourceMappingURL=user.controller.d.ts.map

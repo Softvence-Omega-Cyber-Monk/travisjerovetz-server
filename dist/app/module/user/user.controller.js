@@ -60,6 +60,17 @@ const updateUserProfile = (0, catchAsync_1.default)(async (req, res, next) => {
         data: updatedUser,
     });
 });
+const getAllUser = (0, catchAsync_1.default)(async (req, res, next) => {
+    const query = req.query;
+    const result = await user_services_1.UserServices.getAllUser(query);
+    (0, sendResponse_1.sendResponse)(res, {
+        success: true,
+        statusCode: 200,
+        message: "All User Retrived Successfully",
+        data: result.data,
+        meta: result.meta
+    });
+});
 const getAccessTokenUseRefreshToken = (0, catchAsync_1.default)(async (req, res, next) => {
     const refreshToken = req.headers?.authorization;
     const result = await (0, createAccessTokenUseRefreshToken_1.createAccessTokenUseRefreshToken)(refreshToken);
@@ -74,6 +85,7 @@ exports.UserController = {
     SignUp,
     SingIn,
     updateUserProfile,
-    getAccessTokenUseRefreshToken
+    getAccessTokenUseRefreshToken,
+    getAllUser
 };
 //# sourceMappingURL=user.controller.js.map

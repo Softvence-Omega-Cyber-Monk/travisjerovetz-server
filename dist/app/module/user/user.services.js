@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserServices = void 0;
 const AppError_1 = __importDefault(require("../../utils/AppError"));
 const generateJwt_1 = require("../../utils/generateJwt");
+const QueryBuilder_1 = require("../../utils/QueryBuilder");
 const user_model_1 = require("./user.model");
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const signUp = async (data) => {
@@ -46,8 +47,27 @@ const signIn = async (data) => {
         user: rest
     };
 };
+const getAllUser = async (query) => {
+    // base query
+    const userQuery = user_model_1.User.find();
+    // QueryBuilder use
+    const queryBuilder = new QueryBuilder_1.QueryBuilder(userQuery, query)
+        .filter() // filter
+        .search(["phone", "email", "fullName"]) // searchable fields
+        .sort() // sort
+        .paginate(); // pagination
+    // final data
+    const result = await queryBuilder.build();
+    // meta data (pagination info)
+    const meta = await queryBuilder.getMeta();
+    return {
+        meta,
+        data: result
+    };
+};
 exports.UserServices = {
     signUp,
-    signIn
+    signIn,
+    getAllUser
 };
 //# sourceMappingURL=user.services.js.map
