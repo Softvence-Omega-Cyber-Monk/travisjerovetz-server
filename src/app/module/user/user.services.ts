@@ -1,5 +1,6 @@
 import AppError from "../../utils/AppError";
 import { generateJwt } from "../../utils/generateJwt";
+import { QueryBuilder } from "../../utils/QueryBuilder";
 import { IUser } from "./user.interface";
 import { User } from "./user.model";
 import bcrypt from "bcrypt"
@@ -60,7 +61,31 @@ const signIn = async (data: { email: string; password: string }) => {
 };
 
 
+const getAllUser = async (query: Record<string, string>) => {
+    // base query
+    const userQuery = User.find();
+
+    // QueryBuilder use
+    const queryBuilder = new QueryBuilder(userQuery, query)
+        .filter()                               // filter
+        .search(["phone", "email", "fullName"])  // searchable fields
+        .sort()                                 // sort
+        .paginate();                            // pagination
+
+    // final data
+    const result = await queryBuilder.build();
+
+    // meta data (pagination info)
+    const meta = await queryBuilder.getMeta();
+
+    return {
+        meta,
+        data: result
+    };
+};
+
 export const UserServices = {
     signUp,
-    signIn
+    signIn,
+    getAllUser
 }

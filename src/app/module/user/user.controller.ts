@@ -79,6 +79,24 @@ const updateUserProfile = catchAsync(async (req: Request, res: Response, next: N
 }
 );
 
+
+const getAllUser = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    const query = req.query;
+
+    const result = await UserServices.getAllUser(query as Record<string, string>);
+
+
+    sendResponse(res, {
+        success: true,
+        statusCode: 200,
+        message: "All User Retrived Successfully",
+        data: result.data,
+        meta: result.meta
+    })
+
+})
+
+
 const getAccessTokenUseRefreshToken = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
 
     const refreshToken = req.headers?.authorization;
@@ -91,11 +109,12 @@ const getAccessTokenUseRefreshToken = catchAsync(async (req: Request, res: Respo
         message: "Token refreshed successfully",
         data: result
     })
-})
+});
 
 export const UserController = {
     SignUp,
     SingIn,
     updateUserProfile,
-    getAccessTokenUseRefreshToken
+    getAccessTokenUseRefreshToken,
+    getAllUser
 }

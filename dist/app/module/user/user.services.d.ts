@@ -41,5 +41,18 @@ export declare const UserServices: {
             __v: number;
         };
     }>;
+    getAllUser: (query: Record<string, string>) => Promise<{
+        meta: {
+            page: number;
+            limit: number;
+            total: any;
+            totalPage: number;
+        };
+        data: (import("mongoose").Document<unknown, {}, IUser, {}, {}> & IUser & Required<{
+            _id: import("mongoose").Types.ObjectId;
+        }> & {
+            __v: number;
+        })[];
+    }>;
 };
 //# sourceMappingURL=user.services.d.ts.map
