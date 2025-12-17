@@ -96,8 +96,7 @@ const getAllUser = catchAsync(async (req: Request, res: Response, next: NextFunc
 })
 
 const getMe = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-    const userId = req.authUser._id;
-
+    const userId = req.authUser.userId;
     const result = await User.findById(userId);
 
     if (!result) throw new AppError(404, "User Not found");
@@ -125,11 +124,28 @@ const getAccessTokenUseRefreshToken = catchAsync(async (req: Request, res: Respo
     })
 });
 
+const deleteUser = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    const userId = req.params.userId;
+
+    const result = await User.findByIdAndDelete(userId);
+
+    if (!result) throw new AppError(404, "User not found");
+
+    sendResponse(res, {
+        success: true,
+        statusCode: 200,
+        message: "User Deleted successfully",
+        data: null
+    })
+
+})
+
 export const UserController = {
     SignUp,
     SingIn,
     updateUserProfile,
     getAccessTokenUseRefreshToken,
     getAllUser,
-    getMe
+    getMe,
+    deleteUser
 }

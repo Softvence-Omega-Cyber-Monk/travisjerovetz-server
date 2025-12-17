@@ -10,6 +10,7 @@ UserRouter.post("/signUp", UserController.SignUp);
 UserRouter.get("/refreshToken", UserController.getAccessTokenUseRefreshToken)
 UserRouter.get("/get/allUser", UserController.getAllUser);
 UserRouter.get("/getMe" , checkAuths() , UserController.getMe);
+UserRouter.delete("/delete/:userId" , checkAuths() , UserController.deleteUser);
 UserRouter.patch("/update/user/Profile/:id", checkAuths(), UserController.updateUserProfile);
 
 
