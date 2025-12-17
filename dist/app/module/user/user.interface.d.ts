@@ -3,6 +3,13 @@ export interface IEnrollCourse {
     courseId: Types.ObjectId;
     date?: Date;
 }
+export interface IEarnedBadge {
+    badgeId: Types.ObjectId;
+    name: string;
+    earnedDate: Date;
+    points: number;
+    details?: string;
+}
 export interface IUser {
     _id: Types.ObjectId;
     fullName: string;
@@ -13,10 +20,12 @@ export interface IUser {
     avatarUrl?: string;
     dateOfBirth?: Date;
     role: string;
+    earnedBadges: IEarnedBadge[];
     isActive: boolean;
     enrollCourse: IEnrollCourse[];
     lastLogin?: Date;
     createdAt?: Date;
+    totalPoints: number;
     updatedAt?: Date;
 }
 export declare enum IRole {

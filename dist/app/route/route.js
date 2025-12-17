@@ -11,6 +11,8 @@ const courseLesson_router_1 = __importDefault(require("../module/courseLesson/co
 const UserCourseProgress_router_1 = __importDefault(require("../module/userCourseProgress/UserCourseProgress.router"));
 const enroll_router_1 = __importDefault(require("../module/CourseEnroll/enroll.router"));
 const analytics_route_1 = __importDefault(require("../module/analytics/analytics.route"));
+const badges_router_1 = __importDefault(require("../module/BadgesAchievements/badges.router"));
+const support_router_1 = __importDefault(require("../module/Support/support.router"));
 exports.moduleRoute = [
     {
         path: "/user",
@@ -39,6 +41,14 @@ exports.moduleRoute = [
     {
         path: "/analytics",
         routes: analytics_route_1.default
+    },
+    {
+        path: "/badges",
+        routes: badges_router_1.default
+    },
+    {
+        path: "/support",
+        routes: support_router_1.default
     }
 ];
 //# sourceMappingURL=route.js.map

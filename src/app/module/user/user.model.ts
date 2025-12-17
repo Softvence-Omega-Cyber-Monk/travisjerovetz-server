@@ -1,5 +1,15 @@
 import { model, Schema } from "mongoose";
-import { IRole, IUser } from "./user.interface";
+import { IEarnedBadge, IRole, IUser } from "./user.interface";
+
+
+const EarnedBadgeSchema = new Schema<IEarnedBadge>({
+    badgeId: { type: Schema.Types.ObjectId, ref: "Badge", required: true },
+    name: { type: String, required: true },
+    earnedDate: { type: Date, default: Date.now },
+    points: { type: Number, required: true },
+    details: { type: String }
+});
+
 
 const userSchema = new Schema<IUser>(
     {
@@ -41,6 +51,10 @@ const userSchema = new Schema<IUser>(
             enum: IRole,
             default: IRole.USER,
         },
+        earnedBadges: {
+            type: [EarnedBadgeSchema],
+            default: []
+        },
         isActive: {
             type: Boolean,
             default: true,
@@ -58,6 +72,10 @@ const userSchema = new Schema<IUser>(
         ],
         lastLogin: {
             type: Date,
+        },
+        totalPoints: {
+            type: Number,
+            default: 0
         }
     },
     {

@@ -3,6 +3,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.User = void 0;
 const mongoose_1 = require("mongoose");
 const user_interface_1 = require("./user.interface");
+const EarnedBadgeSchema = new mongoose_1.Schema({
+    badgeId: { type: mongoose_1.Schema.Types.ObjectId, ref: "Badge", required: true },
+    name: { type: String, required: true },
+    earnedDate: { type: Date, default: Date.now },
+    points: { type: Number, required: true },
+    details: { type: String }
+});
 const userSchema = new mongoose_1.Schema({
     fullName: {
         type: String,
@@ -36,6 +43,10 @@ const userSchema = new mongoose_1.Schema({
         enum: user_interface_1.IRole,
         default: user_interface_1.IRole.USER,
     },
+    earnedBadges: {
+        type: [EarnedBadgeSchema],
+        default: []
+    },
     isActive: {
         type: Boolean,
         default: true,
@@ -53,6 +64,10 @@ const userSchema = new mongoose_1.Schema({
     ],
     lastLogin: {
         type: Date,
+    },
+    totalPoints: {
+        type: Number,
+        default: 0
     }
 }, {
     timestamps: true,

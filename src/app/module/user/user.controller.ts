@@ -138,7 +138,8 @@ const deleteUser = catchAsync(async (req: Request, res: Response, next: NextFunc
         data: null
     })
 
-})
+});
+
 
 export const UserController = {
     SignUp,

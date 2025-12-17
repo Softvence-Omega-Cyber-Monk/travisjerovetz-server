@@ -5,6 +5,8 @@ import LessionRouter from "../module/courseLesson/courseLesson.router";
 import userCourseProgressRouter from "../module/userCourseProgress/UserCourseProgress.router";
 import enrollRouter from "../module/CourseEnroll/enroll.router";
 import analyticsRouter from "../module/analytics/analytics.route";
+import badgesRouter from "../module/BadgesAchievements/badges.router";
+import supportRouter from "../module/Support/support.router";
 
 
 
@@ -37,6 +39,14 @@ export const moduleRoute = [
     {
         path: "/analytics",
         routes: analyticsRouter
+    },
+    {
+        path: "/badges",
+        routes: badgesRouter
+    },
+    {
+        path: "/support",
+        routes: supportRouter
     }
 ];
 
