@@ -10,6 +10,7 @@ CourseRouter.post("/create", (0, protect_1.checkAuths)(user_interface_1.IRole.AD
 CourseRouter.get("/allCourse", (0, protect_1.checkAuths)(user_interface_1.IRole.ADMIN), course_controller_1.courseController.getAllCourse);
 CourseRouter.patch("/update/course", (0, protect_1.checkAuths)(user_interface_1.IRole.ADMIN), course_controller_1.courseController.updateCourseInformation);
 CourseRouter.get("/course/:courseId", (0, protect_1.checkAuths)(user_interface_1.IRole.ADMIN), course_controller_1.courseController.getCourseWithProgress);
+CourseRouter.delete("/delete/:courseId", (0, protect_1.checkAuths)(), course_controller_1.courseController.deleteCourse);
 CourseRouter.get("/get/coursebasicInfo/:courseId", course_controller_1.courseController.getSingleCourse);
 exports.default = CourseRouter;
 //# sourceMappingURL=course.router.js.map

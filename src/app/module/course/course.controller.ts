@@ -234,10 +234,27 @@ const getSingleCourse = catchAsync(async (req: Request, res: Response, next: Nex
 })
 
 
+const deleteCourse = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    const courseId = req.params.courseId;
+
+    const result = await Course.findByIdAndDelete(courseId);
+
+    if (!result) throw new AppError(404, "Course Not Found");
+
+    sendResponse(res, {
+        success: true,
+        statusCode: 200,
+        message: "Course Deleted successfully",
+        data: null
+    })
+
+})
+
 export const courseController = {
     createCourse,
     getCourseWithProgress,
     getAllCourse,
     updateCourseInformation,
-    getSingleCourse
+    getSingleCourse,
+    deleteCourse
 }
