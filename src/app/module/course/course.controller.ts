@@ -6,7 +6,7 @@ import AppError from "../../utils/AppError";
 import { Course } from "./course.model";
 import { QueryBuilder } from "../../utils/QueryBuilder";
 import { UserCourseProgress } from "../userCourseProgress/UserCourseProgress.model";
-import { ICourse, IUpCourse } from "./course.interface";
+import { IUpCourse } from "./course.interface";
 import { Types } from "mongoose";
 
 
@@ -38,7 +38,9 @@ const createCourse = catchAsync(async (req, res, next: NextFunction) => {
 const getCourseWithProgress = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
 
     const { courseId } = req.params;
+    console.log("Course Id", courseId)
     const userId = req.authUser?.userId;
+    console.log("UserId", userId);
     if (!userId || !courseId) {
         throw new AppError(400, "userId & courseId are required");
     }
@@ -216,9 +218,26 @@ const updateCourseInformation = catchAsync(async (req: Request, res: Response, n
 });
 
 
+const getSingleCourse = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    const courseId = req.params.courseId;
+
+    const result = await courseServices.getCourseBasicInfoById(courseId as string);
+
+    sendResponse(res, {
+        success: true,
+        statusCode: 200,
+        message: "Course Retrived successfully",
+        data: result
+    })
+
+
+})
+
+
 export const courseController = {
     createCourse,
     getCourseWithProgress,
     getAllCourse,
-    updateCourseInformation
+    updateCourseInformation,
+    getSingleCourse
 }

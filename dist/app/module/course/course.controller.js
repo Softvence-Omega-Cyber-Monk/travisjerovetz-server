@@ -30,7 +30,9 @@ const createCourse = (0, catchAsync_1.default)(async (req, res, next) => {
 });
 const getCourseWithProgress = (0, catchAsync_1.default)(async (req, res, next) => {
     const { courseId } = req.params;
+    console.log("Course Id", courseId);
     const userId = req.authUser?.userId;
+    console.log("UserId", userId);
     if (!userId || !courseId) {
         throw new AppError_1.default(400, "userId & courseId are required");
     }
@@ -157,10 +159,21 @@ const updateCourseInformation = (0, catchAsync_1.default)(async (req, res, next)
         data: result,
     });
 });
+const getSingleCourse = (0, catchAsync_1.default)(async (req, res, next) => {
+    const courseId = req.params.courseId;
+    const result = await course_service_1.courseServices.getCourseBasicInfoById(courseId);
+    (0, sendResponse_1.sendResponse)(res, {
+        success: true,
+        statusCode: 200,
+        message: "Course Retrived successfully",
+        data: result
+    });
+});
 exports.courseController = {
     createCourse,
     getCourseWithProgress,
     getAllCourse,
-    updateCourseInformation
+    updateCourseInformation,
+    getSingleCourse
 };
 //# sourceMappingURL=course.controller.js.map

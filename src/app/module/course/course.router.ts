@@ -9,8 +9,9 @@ const CourseRouter = Router();
 
 CourseRouter.post("/create", checkAuths(IRole.ADMIN), multerUpload.fields([{ name: "thumbnail", maxCount: 1 }, { name: "instructorProfile", maxCount: 1 }]), courseController.createCourse);
 CourseRouter.get("/allCourse", checkAuths(IRole.ADMIN), courseController.getAllCourse);
-
-CourseRouter.get("/course/:courseId", checkAuths(IRole.ADMIN), courseController.getCourseWithProgress);
 CourseRouter.patch("/update/course", checkAuths(IRole.ADMIN), courseController.updateCourseInformation);
+CourseRouter.get("/course/:courseId", checkAuths(IRole.ADMIN), courseController.getCourseWithProgress);
+CourseRouter.get("/get/coursebasicInfo/:courseId" , courseController.getSingleCourse);
+
 
 export default CourseRouter;
