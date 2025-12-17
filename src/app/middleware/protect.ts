@@ -31,5 +31,6 @@ export const checkAuths = (...auths: string[]) => async (req: Request, res: Resp
         throw new AppError(401, "You are not permited access this route!");
     };
     req.authUser = validationUser;
+    console.log(validationUser);
     next();
 }

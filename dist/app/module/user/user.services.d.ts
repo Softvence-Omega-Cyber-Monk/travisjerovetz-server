@@ -9,10 +9,12 @@ export declare const UserServices: {
         avatarUrl?: string;
         dateOfBirth?: Date;
         role: string;
+        earnedBadges: import("./user.interface").IEarnedBadge[];
         isActive: boolean;
         enrollCourse: import("./user.interface").IEnrollCourse[];
         lastLogin?: Date;
         createdAt?: Date;
+        totalPoints: number;
         updatedAt?: Date;
         __v: number;
     }>;
@@ -33,10 +35,12 @@ export declare const UserServices: {
             avatarUrl?: string;
             dateOfBirth?: Date;
             role: string;
+            earnedBadges: import("./user.interface").IEarnedBadge[];
             isActive: boolean;
             enrollCourse: import("./user.interface").IEnrollCourse[];
             lastLogin?: Date;
             createdAt?: Date;
+            totalPoints: number;
             updatedAt?: Date;
             __v: number;
         };
