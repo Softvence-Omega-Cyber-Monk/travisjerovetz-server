@@ -11,5 +11,24 @@ export declare const courseServices: {
     }> & {
         __v: number;
     }) | null>;
+    getCourseBasicInfoById: (courseId: string) => Promise<{
+        totalModules: number;
+        totalLessons: number;
+        totalDuration: number;
+        _id: Types.ObjectId;
+        title: string;
+        description: string;
+        thumbnail: string;
+        category: string;
+        prices: number;
+        courseTag: string;
+        courseStatus: string;
+        whatsUserLearn: string[];
+        instructorName: string;
+        instructorTitle: string;
+        instructorDescription: string;
+        instructorProfile: string;
+        __v: number;
+    } | null>;
 };
 //# sourceMappingURL=course.service.d.ts.map

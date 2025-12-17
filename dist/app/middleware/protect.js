@@ -26,7 +26,9 @@ const checkAuths = (...auths) => async (req, res, next) => {
     if (auths.length && !auths.includes(validationUser.role)) {
         throw new AppError_1.default(401, "You are not permited access this route!");
     }
-    req.authUser = validationUser.payload;
+    ;
+    console.log(validationUser);
+    req.authUser = validationUser;
     next();
 };
 exports.checkAuths = checkAuths;
