@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from "express";
+import { NextFunction, Request, Response, Router } from "express";
 import catchAsync from "../../utils/catchAsync";
 import { sendResponse } from "../../utils/sendResponse";
 import { courseServices } from "./course.service";
@@ -197,26 +197,87 @@ const getAllCourse = catchAsync(async (req: Request, res: Response, next: NextFu
     });
 });
 
+
 const updateCourseInformation = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-    const courseId = req.body.courseId;
-    const payload: Partial<IUpCourse> = req.body;
+        // ✅ SAFE access
+        const rawData = req.body?.data;
+        if (!rawData) {
+            throw new AppError(
+                400,
+                "Form-data 'data' field is required (JSON string)"
+            );
+        }
 
-    if (!courseId) {
-        throw new AppError(404, "Course id must be required");
+        let parsedData: any;
+
+        try {
+            parsedData = JSON.parse(rawData);
+        } catch {
+            throw new AppError(400, "Invalid JSON format in data field");
+        }
+
+        const { courseId, ...rest } = parsedData;
+
+        if (!courseId) {
+            throw new AppError(400, "Course id must be required");
+        }
+
+        const payload: Partial<IUpCourse> = {};
+
+        // ✅ ignore null / undefined / ""
+        Object.entries(rest).forEach(([key, value]) => {
+            if (value === undefined || value === null || value === "") return;
+
+            if (key === "prices") {
+                payload.prices = Number(value);
+                return;
+            }
+
+            if (key === "whatsUserLearn") {
+                if (Array.isArray(value)) {
+                    payload.whatsUserLearn = value as string[];
+                } else if (typeof value === "string") {
+                    payload.whatsUserLearn = JSON.parse(value) as string[];
+                }
+                return;
+            }
+
+            (payload as any)[key] = value;
+        });
+        // ✅ optional images
+        if (req.files) {
+            const files = req.files as Record<string, Express.Multer.File[]>;
+
+            if (files.thumbnail?.[0]) {
+                payload.thumbnail = (files.thumbnail[0] as any).path;
+            }
+
+            if (files.instructorProfile?.[0]) {
+                payload.instructorProfile = (files.instructorProfile[0] as any).path;
+            }
+        }
+
+        if (Object.keys(payload).length === 0) {
+            throw new AppError(400, "No valid fields provided to update");
+        }
+
+        const result = await courseServices.updateCourse(
+            new Types.ObjectId(courseId),
+            payload
+        );
+
+        if (!result) {
+            throw new AppError(404, "Course not found");
+        }
+
+        sendResponse(res, {
+            success: true,
+            statusCode: 200,
+            message: "Course updated successfully",
+            data: result,
+        });
     }
-
-    const result = await courseServices.updateCourse(new Types.ObjectId(courseId), payload);
-
-    if (!result) throw new AppError(404, "Course not found");
-
-    sendResponse(res, {
-        success: true,
-        statusCode: 200,
-        message: "Course updated successfully",
-        data: result,
-    });
-});
-
+);
 
 const getSingleCourse = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const courseId = req.params.courseId;

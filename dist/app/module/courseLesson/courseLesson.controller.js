@@ -129,9 +129,67 @@ const deleteLesson = (0, catchAsync_1.default)(async (req, res) => {
         message: "Lesson deleted successfully",
     });
 });
+const updateLessonContentVideo = async (req, res) => {
+    try {
+        const { courseId, moduleId, lessonId } = req.params;
+        if (!req.files) {
+            return res.status(400).json({
+                success: false,
+                message: "No file uploaded",
+            });
+        }
+        const files = req.files;
+        const file = files.video?.[0] ||
+            files.audio?.[0] ||
+            files.pdf?.[0] ||
+            files.scorm?.[0] ||
+            files.image?.[0];
+        if (!file) {
+            return res.status(400).json({
+                success: false,
+                message: "Unsupported file type",
+            });
+        }
+        // ✅ multer-storage-cloudinary auto upload করেছে
+        const contentUrl = file.path; // 👈 Cloudinary URL
+        const updatedCourse = await course_model_1.Course.findOneAndUpdate({
+            _id: courseId,
+            "modules._id": moduleId,
+            "modules.lessons._id": lessonId,
+        }, {
+            $set: {
+                "modules.$[m].lessons.$[l].contentUrl": contentUrl,
+            },
+        }, {
+            arrayFilters: [
+                { "m._id": moduleId },
+                { "l._id": lessonId },
+            ],
+            new: true,
+        });
+        if (!updatedCourse) {
+            return res.status(404).json({
+                success: false,
+                message: "Lesson not found",
+            });
+        }
+        res.status(200).json({
+            success: true,
+            message: "Lesson content updated successfully",
+            contentUrl,
+        });
+    }
+    catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message,
+        });
+    }
+};
 exports.LessionController = {
     createLesson,
     updateLessonContent,
-    deleteLesson
+    deleteLesson,
+    updateLessonContentVideo
 };
 //# sourceMappingURL=courseLesson.controller.js.map

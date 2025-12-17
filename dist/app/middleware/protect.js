@@ -27,7 +27,6 @@ const checkAuths = (...auths) => async (req, res, next) => {
         throw new AppError_1.default(401, "You are not permited access this route!");
     }
     ;
-    console.log(validationUser);
     req.authUser = validationUser;
     next();
 };
