@@ -18,8 +18,8 @@ const adminAnalytics = (0, catchAsync_1.default)(async (req, res, next) => {
     });
 });
 const userAnalyticsData = (0, catchAsync_1.default)(async (req, res, next) => {
-    // const userId = req.authUser?._id;
-    const userId = req.params?.userId;
+    const userId = req.authUser?.userId;
+    // const userId = req.params?.userId
     const result = await analytics_services_1.analyticsServices.userAnalyticsData(new mongoose_1.Types.ObjectId(userId));
     (0, sendResponse_1.sendResponse)(res, {
         success: true,

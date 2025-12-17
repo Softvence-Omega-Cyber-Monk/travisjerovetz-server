@@ -18,8 +18,8 @@ const adminAnalytics = catchAsync(async (req: Request, res: Response, next: Next
 
 
 const userAnalyticsData = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-    // const userId = req.authUser?._id;
-    const userId = req.params?.userId
+    const userId = req.authUser?.userId;
+    // const userId = req.params?.userId
 
     const result = await analyticsServices.userAnalyticsData(new Types.ObjectId(userId));
 
