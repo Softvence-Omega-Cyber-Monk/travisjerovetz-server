@@ -8,7 +8,7 @@ const UserRouter = Router();
 UserRouter.post("/signIn", UserController.SingIn);
 UserRouter.post("/signUp", UserController.SignUp);
 UserRouter.get("/refreshToken", UserController.getAccessTokenUseRefreshToken)
-UserRouter.get("/getAllUser", checkAuths(), UserController.getAllUser);
+UserRouter.get("/get/allUser", UserController.getAllUser);
 UserRouter.patch("/update/user/Profile/:id", checkAuths(), UserController.updateUserProfile);
 
 
