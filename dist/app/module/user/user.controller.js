@@ -11,7 +11,6 @@ const AppError_1 = __importDefault(require("../../utils/AppError"));
 const user_model_1 = require("./user.model");
 const createAccessTokenUseRefreshToken_1 = require("../../utils/createAccessTokenUseRefreshToken");
 const SignUp = (0, catchAsync_1.default)(async (req, res, next) => {
-    console.log(req.body);
     const result = await user_services_1.UserServices.signUp(req.body);
     (0, sendResponse_1.sendResponse)(res, {
         success: true,
@@ -71,6 +70,18 @@ const getAllUser = (0, catchAsync_1.default)(async (req, res, next) => {
         meta: result.meta
     });
 });
+const getMe = (0, catchAsync_1.default)(async (req, res, next) => {
+    const userId = req.authUser._id;
+    const result = await user_model_1.User.findById(userId);
+    if (!result)
+        throw new AppError_1.default(404, "User Not found");
+    (0, sendResponse_1.sendResponse)(res, {
+        success: true,
+        statusCode: 200,
+        message: "User Profile retrived successfully",
+        data: result
+    });
+});
 const getAccessTokenUseRefreshToken = (0, catchAsync_1.default)(async (req, res, next) => {
     const refreshToken = req.headers?.authorization;
     const result = await (0, createAccessTokenUseRefreshToken_1.createAccessTokenUseRefreshToken)(refreshToken);
@@ -86,6 +97,7 @@ exports.UserController = {
     SingIn,
     updateUserProfile,
     getAccessTokenUseRefreshToken,
-    getAllUser
+    getAllUser,
+    getMe
 };
 //# sourceMappingURL=user.controller.js.map

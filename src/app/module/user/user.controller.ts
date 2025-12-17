@@ -7,7 +7,6 @@ import { User } from "./user.model";
 import { createAccessTokenUseRefreshToken } from "../../utils/createAccessTokenUseRefreshToken";
 
 const SignUp = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-    console.log(req.body);
     const result = await UserServices.signUp(req.body);
 
     sendResponse(res, {
@@ -96,6 +95,21 @@ const getAllUser = catchAsync(async (req: Request, res: Response, next: NextFunc
 
 })
 
+const getMe = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    const userId = req.authUser._id;
+
+    const result = await User.findById(userId);
+
+    if (!result) throw new AppError(404, "User Not found");
+
+    sendResponse(res, {
+        success: true,
+        statusCode: 200,
+        message: "User Profile retrived successfully",
+        data: result
+    })
+
+})
 
 const getAccessTokenUseRefreshToken = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
 
@@ -116,5 +130,6 @@ export const UserController = {
     SingIn,
     updateUserProfile,
     getAccessTokenUseRefreshToken,
-    getAllUser
+    getAllUser,
+    getMe
 }

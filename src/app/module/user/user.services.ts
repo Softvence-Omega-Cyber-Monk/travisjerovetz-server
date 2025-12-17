@@ -61,6 +61,7 @@ const signIn = async (data: { email: string; password: string }) => {
 };
 
 
+
 const getAllUser = async (query: Record<string, string>) => {
     // base query
     const userQuery = User.find();
