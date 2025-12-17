@@ -144,14 +144,59 @@ const getAllCourse = (0, catchAsync_1.default)(async (req, res, next) => {
     });
 });
 const updateCourseInformation = (0, catchAsync_1.default)(async (req, res, next) => {
-    const courseId = req.body.courseId;
-    const payload = req.body;
+    // ✅ SAFE access
+    const rawData = req.body?.data;
+    if (!rawData) {
+        throw new AppError_1.default(400, "Form-data 'data' field is required (JSON string)");
+    }
+    let parsedData;
+    try {
+        parsedData = JSON.parse(rawData);
+    }
+    catch {
+        throw new AppError_1.default(400, "Invalid JSON format in data field");
+    }
+    const { courseId, ...rest } = parsedData;
     if (!courseId) {
-        throw new AppError_1.default(404, "Course id must be required");
+        throw new AppError_1.default(400, "Course id must be required");
+    }
+    const payload = {};
+    // ✅ ignore null / undefined / ""
+    Object.entries(rest).forEach(([key, value]) => {
+        if (value === undefined || value === null || value === "")
+            return;
+        if (key === "prices") {
+            payload.prices = Number(value);
+            return;
+        }
+        if (key === "whatsUserLearn") {
+            if (Array.isArray(value)) {
+                payload.whatsUserLearn = value;
+            }
+            else if (typeof value === "string") {
+                payload.whatsUserLearn = JSON.parse(value);
+            }
+            return;
+        }
+        payload[key] = value;
+    });
+    // ✅ optional images
+    if (req.files) {
+        const files = req.files;
+        if (files.thumbnail?.[0]) {
+            payload.thumbnail = files.thumbnail[0].path;
+        }
+        if (files.instructorProfile?.[0]) {
+            payload.instructorProfile = files.instructorProfile[0].path;
+        }
+    }
+    if (Object.keys(payload).length === 0) {
+        throw new AppError_1.default(400, "No valid fields provided to update");
     }
     const result = await course_service_1.courseServices.updateCourse(new mongoose_1.Types.ObjectId(courseId), payload);
-    if (!result)
+    if (!result) {
         throw new AppError_1.default(404, "Course not found");
+    }
     (0, sendResponse_1.sendResponse)(res, {
         success: true,
         statusCode: 200,

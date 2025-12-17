@@ -182,8 +182,81 @@ const deleteLesson = catchAsync(async (req: Request, res: Response) => {
 }
 );
 
+
+
+const updateLessonContentVideo = async (req: Request, res: Response) => {
+  try {
+    const { courseId, moduleId, lessonId } = req.params;
+
+    if (!req.files) {
+      return res.status(400).json({
+        success: false,
+        message: "No file uploaded",
+      });
+    }
+
+    const files = req.files as Record<string, Express.Multer.File[]>;
+
+    const file =
+      files.video?.[0] ||
+      files.audio?.[0] ||
+      files.pdf?.[0] ||
+      files.scorm?.[0] ||
+      files.image?.[0];
+
+    if (!file) {
+      return res.status(400).json({
+        success: false,
+        message: "Unsupported file type",
+      });
+    }
+
+    // ✅ multer-storage-cloudinary auto upload করেছে
+    const contentUrl = (file as any).path; // 👈 Cloudinary URL
+
+    const updatedCourse = await Course.findOneAndUpdate(
+      {
+        _id: courseId,
+        "modules._id": moduleId,
+        "modules.lessons._id": lessonId,
+      },
+      {
+        $set: {
+          "modules.$[m].lessons.$[l].contentUrl": contentUrl,
+        },
+      },
+      {
+        arrayFilters: [
+          { "m._id": moduleId },
+          { "l._id": lessonId },
+        ],
+        new: true,
+      }
+    );
+
+    if (!updatedCourse) {
+      return res.status(404).json({
+        success: false,
+        message: "Lesson not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Lesson content updated successfully",
+      contentUrl,
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
 export const LessionController = {
   createLesson,
   updateLessonContent,
-  deleteLesson
+  deleteLesson,
+  updateLessonContentVideo
 }
