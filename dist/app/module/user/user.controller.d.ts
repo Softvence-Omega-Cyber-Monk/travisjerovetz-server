@@ -5,5 +5,6 @@ export declare const UserController: {
     updateUserProfile: (req: Request, res: Response, next: NextFunction) => void;
     getAccessTokenUseRefreshToken: (req: Request, res: Response, next: NextFunction) => void;
     getAllUser: (req: Request, res: Response, next: NextFunction) => void;
+    getMe: (req: Request, res: Response, next: NextFunction) => void;
 };
 //# sourceMappingURL=user.controller.d.ts.map
