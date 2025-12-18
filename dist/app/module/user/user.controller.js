@@ -8,6 +8,7 @@ const catchAsync_1 = __importDefault(require("../../utils/catchAsync"));
 const user_services_1 = require("./user.services");
 const sendResponse_1 = require("../../utils/sendResponse");
 const AppError_1 = __importDefault(require("../../utils/AppError"));
+const bcrypt_1 = __importDefault(require("bcrypt"));
 const user_model_1 = require("./user.model");
 const createAccessTokenUseRefreshToken_1 = require("../../utils/createAccessTokenUseRefreshToken");
 const SignUp = (0, catchAsync_1.default)(async (req, res, next) => {
@@ -110,6 +111,32 @@ const deleteUser = (0, catchAsync_1.default)(async (req, res, next) => {
         data: null
     });
 });
+const changePassword = (0, catchAsync_1.default)(async (req, res, next) => {
+    const userId = req.authUser.userId; // auth middleware থেকে
+    const { currentPassword, newPassword } = req.body;
+    // 1️⃣ user খুঁজে বের করো
+    const user = await user_model_1.User.findById(userId).select("+password");
+    if (!user) {
+        return next(new AppError_1.default(404, "User not found"));
+    }
+    // 2️⃣ current password match করো
+    const isPasswordMatched = await bcrypt_1.default.compare(currentPassword, user.password);
+    if (!isPasswordMatched) {
+        return next(new AppError_1.default(403, "Current password is incorrect"));
+    }
+    // 3️⃣ নতুন password hash করো
+    const hashedPassword = await bcrypt_1.default.hash(newPassword, 10);
+    // 4️⃣ DB তে save করো
+    user.password = hashedPassword;
+    await user.save();
+    // 5️⃣ response পাঠাও
+    (0, sendResponse_1.sendResponse)(res, {
+        success: true,
+        statusCode: 200,
+        message: "Password Changed Successfully",
+        data: null,
+    });
+});
 exports.UserController = {
     SignUp,
     SingIn,
@@ -117,6 +144,7 @@ exports.UserController = {
     getAccessTokenUseRefreshToken,
     getAllUser,
     getMe,
-    deleteUser
+    deleteUser,
+    changePassword
 };
 //# sourceMappingURL=user.controller.js.map

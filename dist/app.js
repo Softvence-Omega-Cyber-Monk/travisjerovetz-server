@@ -12,7 +12,7 @@ const route_1 = require("./app/route/route");
 const global_error_handler_1 = require("./app/middleware/global.error.handler");
 exports.app = (0, express_1.default)();
 exports.app.use((0, cors_1.default)({
-    origin: "http://localhost:5173",
+    origin: ["http://localhost:5173", "https://travisjerovetz-frontend.vercel.app", "*"],
     credentials: true,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"]
 }));
