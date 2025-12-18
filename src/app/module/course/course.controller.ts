@@ -165,24 +165,22 @@ const getCourseWithProgress = catchAsync(async (req: Request, res: Response, nex
 });
 
 const getAllCourse = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-
     // 1. Start query with only Published courses
-    const baseQuery = Course.find({ courseStatus: "Published" });
+    const baseQuery = Course.find({});
 
     // 2. Create QueryBuilder instance
     const queryBuilder = new QueryBuilder(baseQuery, req.query as Record<string, string>);
 
     // 3. Apply filter, search, sort, select, paginate
     const coursesQuery = queryBuilder
-        .filter() // any filters like category, price, etc.
-        .search(["title", "description", "courseTag", "category"]) // searchable fields
-        .sort()   // default: -createdAt
-        .select() // select specific fields if requested
-        .paginate() // apply pagination
-        .build();
+        .filter()
+        .search(["title", "description", "category"])
+        .sort()
+        .select()
+        .paginate();
 
     // 4. Execute query
-    const courses = await coursesQuery;
+    const courses = await coursesQuery.build();
 
     // 5. Get pagination/meta info based on filtered & searched query
     const meta = await queryBuilder.getMeta();
@@ -198,85 +196,138 @@ const getAllCourse = catchAsync(async (req: Request, res: Response, next: NextFu
 });
 
 
+// const getAllCourse = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+//     const { searchTerm, page, limit, category } = req.query as {
+//       searchTerm?: string;
+//       page?: string;
+//       limit?: string;
+//       category?: string;
+//     };
+
+//     // Default pagination values
+//     const pageNum = parseInt(page || "1");
+//     const limitNum = parseInt(limit || "10");
+
+//     // Base query
+//     let query: any = {};
+
+//     // Search by title or description
+//     if (searchTerm) {
+//       query.$or = [
+//         { title: { $regex: searchTerm, $options: "i" } },
+//         { description: { $regex: searchTerm, $options: "i" } },
+//       ];
+//     }
+
+//     // Filter by category (if not 'all')
+//     if (category && category.toLowerCase() !== "all") {
+//       query.category = category;
+//     }
+
+//     // Only published courses
+//     query.courseStatus = "Published";
+
+//     // Count total results
+//     const total = await Course.countDocuments(query);
+
+//     // Pagination & sorting (latest first by default)
+//     const courses = await Course.find(query)
+//       .sort("-createdAt") // latest created first
+//       .skip((pageNum - 1) * limitNum)
+//       .limit(limitNum);
+
+//     res.status(200).json({
+//       success: true,
+//       page: pageNum,
+//       limit: limitNum,
+//       total,
+//       totalPages: Math.ceil(total / limitNum),
+//       data: courses,
+//     });
+//   }
+// );
+
+
+
 const updateCourseInformation = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-        // ✅ SAFE access
-        const rawData = req.body?.data;
-        if (!rawData) {
-            throw new AppError(
-                400,
-                "Form-data 'data' field is required (JSON string)"
-            );
-        }
-
-        let parsedData: any;
-
-        try {
-            parsedData = JSON.parse(rawData);
-        } catch {
-            throw new AppError(400, "Invalid JSON format in data field");
-        }
-
-        const { courseId, ...rest } = parsedData;
-
-        if (!courseId) {
-            throw new AppError(400, "Course id must be required");
-        }
-
-        const payload: Partial<IUpCourse> = {};
-
-        // ✅ ignore null / undefined / ""
-        Object.entries(rest).forEach(([key, value]) => {
-            if (value === undefined || value === null || value === "") return;
-
-            if (key === "prices") {
-                payload.prices = Number(value);
-                return;
-            }
-
-            if (key === "whatsUserLearn") {
-                if (Array.isArray(value)) {
-                    payload.whatsUserLearn = value as string[];
-                } else if (typeof value === "string") {
-                    payload.whatsUserLearn = JSON.parse(value) as string[];
-                }
-                return;
-            }
-
-            (payload as any)[key] = value;
-        });
-        // ✅ optional images
-        if (req.files) {
-            const files = req.files as Record<string, Express.Multer.File[]>;
-
-            if (files.thumbnail?.[0]) {
-                payload.thumbnail = (files.thumbnail[0] as any).path;
-            }
-
-            if (files.instructorProfile?.[0]) {
-                payload.instructorProfile = (files.instructorProfile[0] as any).path;
-            }
-        }
-
-        if (Object.keys(payload).length === 0) {
-            throw new AppError(400, "No valid fields provided to update");
-        }
-
-        const result = await courseServices.updateCourse(
-            new Types.ObjectId(courseId),
-            payload
+    // ✅ SAFE access
+    const rawData = req.body?.data;
+    if (!rawData) {
+        throw new AppError(
+            400,
+            "Form-data 'data' field is required (JSON string)"
         );
+    }
 
-        if (!result) {
-            throw new AppError(404, "Course not found");
+    let parsedData: any;
+
+    try {
+        parsedData = JSON.parse(rawData);
+    } catch {
+        throw new AppError(400, "Invalid JSON format in data field");
+    }
+
+    const { courseId, ...rest } = parsedData;
+
+    if (!courseId) {
+        throw new AppError(400, "Course id must be required");
+    }
+
+    const payload: Partial<IUpCourse> = {};
+
+    // ✅ ignore null / undefined / ""
+    Object.entries(rest).forEach(([key, value]) => {
+        if (value === undefined || value === null || value === "") return;
+
+        if (key === "prices") {
+            payload.prices = Number(value);
+            return;
         }
 
-        sendResponse(res, {
-            success: true,
-            statusCode: 200,
-            message: "Course updated successfully",
-            data: result,
-        });
+        if (key === "whatsUserLearn") {
+            if (Array.isArray(value)) {
+                payload.whatsUserLearn = value as string[];
+            } else if (typeof value === "string") {
+                payload.whatsUserLearn = JSON.parse(value) as string[];
+            }
+            return;
+        }
+
+        (payload as any)[key] = value;
+    });
+    // ✅ optional images
+    if (req.files) {
+        const files = req.files as Record<string, Express.Multer.File[]>;
+
+        if (files.thumbnail?.[0]) {
+            payload.thumbnail = (files.thumbnail[0] as any).path;
+        }
+
+        if (files.instructorProfile?.[0]) {
+            payload.instructorProfile = (files.instructorProfile[0] as any).path;
+        }
     }
+
+    if (Object.keys(payload).length === 0) {
+        throw new AppError(400, "No valid fields provided to update");
+    }
+
+    const result = await courseServices.updateCourse(
+        new Types.ObjectId(courseId),
+        payload
+    );
+
+    if (!result) {
+        throw new AppError(404, "Course not found");
+    }
+
+    sendResponse(res, {
+        success: true,
+        statusCode: 200,
+        message: "Course updated successfully",
+        data: result,
+    });
+}
 );
 
 const getSingleCourse = catchAsync(async (req: Request, res: Response, next: NextFunction) => {

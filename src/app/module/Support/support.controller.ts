@@ -32,7 +32,6 @@ const getAllSupport = catchAsync(
         const totalResolve = await Support.find({ solveStatus: "Resolve" }).countDocuments();
         const totalPending = await Support.find({ solveStatus: "Pending" }).countDocuments();
 
-        // FIXED: Added .filter() and removed "_id" from search fields
         const supportQuery = new QueryBuilder(
             Support.find(),
             req.query as Record<string, string>

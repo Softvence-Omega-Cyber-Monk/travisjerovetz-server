@@ -83,7 +83,7 @@ const getMe = (0, catchAsync_1.default)(async (req, res, next) => {
     });
 });
 const getAccessTokenUseRefreshToken = (0, catchAsync_1.default)(async (req, res, next) => {
-    const refreshToken = req.headers?.authorization;
+    const refreshToken = req.body?.authorization;
     const result = await (0, createAccessTokenUseRefreshToken_1.createAccessTokenUseRefreshToken)(refreshToken);
     (0, sendResponse_1.sendResponse)(res, {
         success: true,

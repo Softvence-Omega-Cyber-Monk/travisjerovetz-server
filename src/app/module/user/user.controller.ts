@@ -112,7 +112,7 @@ const getMe = catchAsync(async (req: Request, res: Response, next: NextFunction)
 
 const getAccessTokenUseRefreshToken = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
 
-    const refreshToken = req.headers?.authorization;
+    const refreshToken = req.body?.authorization;
 
     const result = await createAccessTokenUseRefreshToken(refreshToken as string);
 
