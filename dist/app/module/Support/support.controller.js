@@ -26,7 +26,11 @@ const createSupport = (0, catchAsync_1.default)(async (req, res, next) => {
 const getAllSupport = (0, catchAsync_1.default)(async (req, res, next) => {
     const totalResolve = await support_model_1.Support.find({ solveStatus: "Resolve" }).countDocuments();
     const totalPending = await support_model_1.Support.find({ solveStatus: "Pending" }).countDocuments();
+    // FIXED: Added .filter() and removed "_id" from search fields
     const supportQuery = new QueryBuilder_1.QueryBuilder(support_model_1.Support.find(), req.query)
+        .filter() // ✅ এটা add করা হয়েছে
+        .search(["userEmail", "phone", "problemDescription"])
+        .sort()
         .paginate();
     const result = await supportQuery.build();
     const meta = await supportQuery.getMeta();

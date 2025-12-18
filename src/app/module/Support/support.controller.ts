@@ -29,14 +29,17 @@ const createSupport = catchAsync(async (req: Request, res: Response, next: NextF
 
 const getAllSupport = catchAsync(
     async (req: Request, res: Response, next: NextFunction) => {
-
         const totalResolve = await Support.find({ solveStatus: "Resolve" }).countDocuments();
         const totalPending = await Support.find({ solveStatus: "Pending" }).countDocuments();
 
+        // FIXED: Added .filter() and removed "_id" from search fields
         const supportQuery = new QueryBuilder(
             Support.find(),
             req.query as Record<string, string>
         )
+            .filter()  // ✅ এটা add করা হয়েছে
+            .search(["userEmail", "phone", "problemDescription"])
+            .sort()
             .paginate();
 
         const result = await supportQuery.build();
@@ -53,7 +56,7 @@ const getAllSupport = catchAsync(
             },
         });
     }
-);
+)
 
 
 const updateSupportStatus = catchAsync(
