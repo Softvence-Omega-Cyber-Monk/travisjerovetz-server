@@ -120,7 +120,7 @@ const getAccessTokenUseRefreshToken = catchAsync(async (req: Request, res: Respo
         success: true,
         statusCode: 200,
         message: "Token refreshed successfully",
-        data: result
+        data: result.accessToken
     })
 });
 

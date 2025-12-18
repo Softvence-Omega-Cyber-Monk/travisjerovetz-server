@@ -17,6 +17,6 @@ export const createAccessTokenUseRefreshToken = async (refreshToken: string) => 
 
 
     return {
-        accrssToken: tokens.accessToken
+        accessToken: tokens.accessToken
     }
 }
