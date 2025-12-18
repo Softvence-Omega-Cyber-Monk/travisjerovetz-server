@@ -30,6 +30,9 @@ const createSupport = catchAsync(async (req: Request, res: Response, next: NextF
 const getAllSupport = catchAsync(
     async (req: Request, res: Response, next: NextFunction) => {
 
+        const totalResolve = await Support.find({ solveStatus: "Resolve" }).countDocuments();
+        const totalPending = await Support.find({ solveStatus: "Pending" }).countDocuments();
+
         const supportQuery = new QueryBuilder(
             Support.find(),
             req.query as Record<string, string>
@@ -43,7 +46,11 @@ const getAllSupport = catchAsync(
             success: true,
             message: "Support list retrieved successfully",
             meta,
-            data: result,
+            data: {
+                totalResolve,
+                totalPending,
+                data: result,
+            },
         });
     }
 );
@@ -70,7 +77,7 @@ const updateSupportStatus = catchAsync(
         res.status(200).json({
             success: true,
             message: "Support updated successfully",
-            data: updatedSupport,
+            data: { updatedSupport },
         });
     }
 );

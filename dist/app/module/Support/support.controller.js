@@ -24,6 +24,8 @@ const createSupport = (0, catchAsync_1.default)(async (req, res, next) => {
     });
 });
 const getAllSupport = (0, catchAsync_1.default)(async (req, res, next) => {
+    const totalResolve = await support_model_1.Support.find({ solveStatus: "Resolve" }).countDocuments();
+    const totalPending = await support_model_1.Support.find({ solveStatus: "Pending" }).countDocuments();
     const supportQuery = new QueryBuilder_1.QueryBuilder(support_model_1.Support.find(), req.query)
         .paginate();
     const result = await supportQuery.build();
@@ -32,7 +34,11 @@ const getAllSupport = (0, catchAsync_1.default)(async (req, res, next) => {
         success: true,
         message: "Support list retrieved successfully",
         meta,
-        data: result,
+        data: {
+            totalResolve,
+            totalPending,
+            data: result,
+        },
     });
 });
 const updateSupportStatus = (0, catchAsync_1.default)(async (req, res, next) => {
@@ -48,7 +54,7 @@ const updateSupportStatus = (0, catchAsync_1.default)(async (req, res, next) => 
     res.status(200).json({
         success: true,
         message: "Support updated successfully",
-        data: updatedSupport,
+        data: { updatedSupport },
     });
 });
 exports.supportController = {
