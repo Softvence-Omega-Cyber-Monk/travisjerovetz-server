@@ -28,7 +28,6 @@ const checkAuths = (...auths) => async (req, res, next) => {
     }
     ;
     req.authUser = validationUser;
-    console.log(validationUser);
     next();
 };
 exports.checkAuths = checkAuths;

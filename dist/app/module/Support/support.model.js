@@ -24,7 +24,8 @@ const supportSchema = new mongoose_1.Schema({
     }
 }, {
     timestamps: true,
-    versionKey: false
+    versionKey: false,
 });
+supportSchema.index({ createdAt: -1 }, { expireAfterSeconds: 60 * 60 * 24 * 30 });
 exports.Support = (0, mongoose_1.model)("Support", supportSchema);
 //# sourceMappingURL=support.model.js.map
