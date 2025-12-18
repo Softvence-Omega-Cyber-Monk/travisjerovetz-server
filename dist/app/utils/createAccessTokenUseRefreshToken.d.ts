@@ -1,4 +1,4 @@
 export declare const createAccessTokenUseRefreshToken: (refreshToken: string) => Promise<{
-    accrssToken: string;
+    accessToken: string;
 }>;
 //# sourceMappingURL=createAccessTokenUseRefreshToken.d.ts.map

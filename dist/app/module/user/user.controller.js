@@ -89,7 +89,7 @@ const getAccessTokenUseRefreshToken = (0, catchAsync_1.default)(async (req, res,
         success: true,
         statusCode: 200,
         message: "Token refreshed successfully",
-        data: result
+        data: result.accessToken
     });
 });
 const deleteUser = (0, catchAsync_1.default)(async (req, res, next) => {

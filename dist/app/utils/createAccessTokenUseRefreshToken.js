@@ -18,7 +18,7 @@ const createAccessTokenUseRefreshToken = async (refreshToken) => {
         throw new AppError_1.default(400, "Invalid refresh Token");
     const tokens = await (0, generateJwt_1.generateJwt)(findUser);
     return {
-        accrssToken: tokens.accessToken
+        accessToken: tokens.accessToken
     };
 };
 exports.createAccessTokenUseRefreshToken = createAccessTokenUseRefreshToken;
