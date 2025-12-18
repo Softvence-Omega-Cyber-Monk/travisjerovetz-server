@@ -85,11 +85,17 @@ const getMe = (0, catchAsync_1.default)(async (req, res, next) => {
 const getAccessTokenUseRefreshToken = (0, catchAsync_1.default)(async (req, res, next) => {
     const refreshToken = req.body?.authorization;
     const result = await (0, createAccessTokenUseRefreshToken_1.createAccessTokenUseRefreshToken)(refreshToken);
-    (0, sendResponse_1.sendResponse)(res, {
+    // sendResponse(res, {
+    //     success: true,
+    //     statusCode: 200,
+    //     message: "Token refreshed successfully",
+    //     data: result
+    // })
+    res.status(200).send({
         success: true,
         statusCode: 200,
         message: "Token refreshed successfully",
-        data: result.accessToken
+        accessToken: result.accessToken
     });
 });
 const deleteUser = (0, catchAsync_1.default)(async (req, res, next) => {

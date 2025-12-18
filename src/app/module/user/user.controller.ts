@@ -116,11 +116,17 @@ const getAccessTokenUseRefreshToken = catchAsync(async (req: Request, res: Respo
 
     const result = await createAccessTokenUseRefreshToken(refreshToken as string);
 
-    sendResponse(res, {
+    // sendResponse(res, {
+    //     success: true,
+    //     statusCode: 200,
+    //     message: "Token refreshed successfully",
+    //     data: result
+    // })
+    res.status(200).send({
         success: true,
         statusCode: 200,
         message: "Token refreshed successfully",
-        data: result.accessToken
+        accessToken: result.accessToken
     })
 });
 
