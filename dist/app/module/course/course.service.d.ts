@@ -16,6 +16,16 @@ export declare const courseServices: {
         totalLessons: number;
         totalDuration: number;
         _id: Types.ObjectId;
+        $locals: Record<string, unknown>;
+        $op: "save" | "validate" | "remove" | null;
+        $where: Record<string, unknown>;
+        baseModelName?: string;
+        collection: import("mongoose").Collection;
+        db: import("mongoose").Connection;
+        errors?: import("mongoose").Error.ValidationError;
+        id?: any;
+        isNew: boolean;
+        schema: import("mongoose").Schema;
         title: string;
         description: string;
         thumbnail: string;
@@ -28,6 +38,7 @@ export declare const courseServices: {
         instructorTitle: string;
         instructorDescription: string;
         instructorProfile: string;
+        modules: import("./course.interface").IModule[];
         __v: number;
     } | null>;
 };
