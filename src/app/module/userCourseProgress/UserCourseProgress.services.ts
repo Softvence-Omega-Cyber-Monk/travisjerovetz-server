@@ -34,7 +34,7 @@ const getProgressSingleCourse = async (userId: string, courseId: string) => {
     const progress = await UserCourseProgress.findOne({ userId, courseId });
     if (!progress) throw new Error("Progress not found");
 
-    // 🟩 MODULE WISE PROGRESS
+
     const modulesProgress = course.modules
         .filter((module) => module._id)
         .map((module) => {
@@ -61,7 +61,7 @@ const getProgressSingleCourse = async (userId: string, courseId: string) => {
             };
         });
 
-    // 🟦 COURSE WISE PROGRESS
+
     const totalLessonsInCourse = course.modules.reduce(
         (acc, m) => acc + (m.lessons?.length || 0),
         0
