@@ -3,6 +3,7 @@ import catchAsync from "../../utils/catchAsync";
 import { UserServices } from "./user.services";
 import { sendResponse } from "../../utils/sendResponse";
 import AppError from "../../utils/AppError";
+import bcrypt from "bcrypt"
 import { User } from "./user.model";
 import { createAccessTokenUseRefreshToken } from "../../utils/createAccessTokenUseRefreshToken";
 
@@ -147,6 +148,48 @@ const deleteUser = catchAsync(async (req: Request, res: Response, next: NextFunc
 });
 
 
+const changePassword = catchAsync(
+    async (req: Request, res: Response, next: NextFunction) => {
+
+        const userId = req.authUser.userId; // auth middleware থেকে
+        const { currentPassword, newPassword } = req.body;
+
+        // 1️⃣ user খুঁজে বের করো
+        const user = await User.findById(userId).select("+password");
+
+        if (!user) {
+            return next(new AppError(404, "User not found"));
+        }
+
+        // 2️⃣ current password match করো
+        const isPasswordMatched = await bcrypt.compare(
+            currentPassword,
+            user.password
+        );
+
+        if (!isPasswordMatched) {
+            return next(
+                new AppError(403, "Current password is incorrect")
+            );
+        }
+
+        // 3️⃣ নতুন password hash করো
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+        // 4️⃣ DB তে save করো
+        user.password = hashedPassword;
+        await user.save();
+
+        // 5️⃣ response পাঠাও
+        sendResponse(res, {
+            success: true,
+            statusCode: 200,
+            message: "Password Changed Successfully",
+            data: null,
+        });
+    }
+);
+
 export const UserController = {
     SignUp,
     SingIn,
@@ -154,5 +197,6 @@ export const UserController = {
     getAccessTokenUseRefreshToken,
     getAllUser,
     getMe,
-    deleteUser
+    deleteUser,
+    changePassword
 }
