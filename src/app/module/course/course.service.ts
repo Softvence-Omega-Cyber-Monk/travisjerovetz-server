@@ -65,9 +65,9 @@ const getCourseBasicInfoById = async (courseId: string) => {
         });
     };
 
-    
+
     return {
-        ...course, // database থেকে আসা সব info 그대로
+        ...course.toObject(), // database থেকে আসা সব info 그대로
         totalModules,
         totalLessons,
         totalDuration
