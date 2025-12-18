@@ -65,10 +65,9 @@ const getCourseBasicInfoById = async (courseId: string) => {
         });
     };
 
-    const {modules , ...rest} = course.toObject();
-
+    
     return {
-        ...rest, // database থেকে আসা সব info 그대로
+        ...course, // database থেকে আসা সব info 그대로
         totalModules,
         totalLessons,
         totalDuration
