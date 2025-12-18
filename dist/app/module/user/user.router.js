@@ -6,7 +6,7 @@ const protect_1 = require("../../middleware/protect");
 const UserRouter = (0, express_1.Router)();
 UserRouter.post("/signIn", user_controller_1.UserController.SingIn);
 UserRouter.post("/signUp", user_controller_1.UserController.SignUp);
-UserRouter.get("/refreshToken", user_controller_1.UserController.getAccessTokenUseRefreshToken);
+UserRouter.post("/refreshToken", user_controller_1.UserController.getAccessTokenUseRefreshToken);
 UserRouter.get("/get/allUser", user_controller_1.UserController.getAllUser);
 UserRouter.get("/getMe", (0, protect_1.checkAuths)(), user_controller_1.UserController.getMe);
 UserRouter.delete("/delete/:userId", (0, protect_1.checkAuths)(), user_controller_1.UserController.deleteUser);
