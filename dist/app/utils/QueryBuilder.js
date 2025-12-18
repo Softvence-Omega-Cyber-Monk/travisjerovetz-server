@@ -44,7 +44,7 @@ class QueryBuilder {
     }
     paginate() {
         const page = Number(this.query.page) || 1;
-        const limit = Number(this.query.limit) || 12;
+        const limit = Number(this.query.limit) || 15;
         const skip = (page - 1) * limit;
         this.queryModel = this.queryModel.limit(limit).skip(skip);
         return this;

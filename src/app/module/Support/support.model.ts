@@ -23,8 +23,14 @@ const supportSchema = new Schema({
     }
 }, {
     timestamps: true,
-    versionKey: false
+    versionKey: false,
+
 });
+
+supportSchema.index(
+    { createdAt: -1 },
+    { expireAfterSeconds: 60 * 60 * 24 * 30 }
+)
 
 
 export const Support = model("Support", supportSchema);
