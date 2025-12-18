@@ -51,7 +51,7 @@ const ModuleSchema = new mongoose_1.Schema({
 const CourseSchema = new mongoose_1.Schema({
     title: { type: String, required: true, trim: true },
     description: { type: String, required: true },
-    thumbnail: { type: String, required: true },
+    thumbnail: { type: String },
     category: { type: String, required: true },
     prices: { type: Number, required: true },
     courseTag: { type: String, required: true },
@@ -65,7 +65,7 @@ const CourseSchema = new mongoose_1.Schema({
     instructorName: { type: String, required: true },
     instructorTitle: { type: String, required: true },
     instructorDescription: { type: String, required: true },
-    instructorProfile: { type: String, required: true },
+    instructorProfile: { type: String },
     modules: [ModuleSchema],
 }, { timestamps: true });
 exports.Course = mongoose_1.default.model("Course", CourseSchema);
