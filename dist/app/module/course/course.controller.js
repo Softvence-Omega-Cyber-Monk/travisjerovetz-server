@@ -119,19 +119,18 @@ const getCourseWithProgress = (0, catchAsync_1.default)(async (req, res, next) =
 });
 const getAllCourse = (0, catchAsync_1.default)(async (req, res, next) => {
     // 1. Start query with only Published courses
-    const baseQuery = course_model_1.Course.find({ courseStatus: "Published" });
+    const baseQuery = course_model_1.Course.find({});
     // 2. Create QueryBuilder instance
     const queryBuilder = new QueryBuilder_1.QueryBuilder(baseQuery, req.query);
     // 3. Apply filter, search, sort, select, paginate
     const coursesQuery = queryBuilder
-        .filter() // any filters like category, price, etc.
-        .search(["title", "description", "courseTag", "category"]) // searchable fields
-        .sort() // default: -createdAt
-        .select() // select specific fields if requested
-        .paginate() // apply pagination
-        .build();
+        .filter()
+        .search(["title", "description", "category"])
+        .sort()
+        .select()
+        .paginate();
     // 4. Execute query
-    const courses = await coursesQuery;
+    const courses = await coursesQuery.build();
     // 5. Get pagination/meta info based on filtered & searched query
     const meta = await queryBuilder.getMeta();
     // 6. Send response
@@ -143,6 +142,48 @@ const getAllCourse = (0, catchAsync_1.default)(async (req, res, next) => {
         meta,
     });
 });
+// const getAllCourse = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+//     const { searchTerm, page, limit, category } = req.query as {
+//       searchTerm?: string;
+//       page?: string;
+//       limit?: string;
+//       category?: string;
+//     };
+//     // Default pagination values
+//     const pageNum = parseInt(page || "1");
+//     const limitNum = parseInt(limit || "10");
+//     // Base query
+//     let query: any = {};
+//     // Search by title or description
+//     if (searchTerm) {
+//       query.$or = [
+//         { title: { $regex: searchTerm, $options: "i" } },
+//         { description: { $regex: searchTerm, $options: "i" } },
+//       ];
+//     }
+//     // Filter by category (if not 'all')
+//     if (category && category.toLowerCase() !== "all") {
+//       query.category = category;
+//     }
+//     // Only published courses
+//     query.courseStatus = "Published";
+//     // Count total results
+//     const total = await Course.countDocuments(query);
+//     // Pagination & sorting (latest first by default)
+//     const courses = await Course.find(query)
+//       .sort("-createdAt") // latest created first
+//       .skip((pageNum - 1) * limitNum)
+//       .limit(limitNum);
+//     res.status(200).json({
+//       success: true,
+//       page: pageNum,
+//       limit: limitNum,
+//       total,
+//       totalPages: Math.ceil(total / limitNum),
+//       data: courses,
+//     });
+//   }
+// );
 const updateCourseInformation = (0, catchAsync_1.default)(async (req, res, next) => {
     // ✅ SAFE access
     const rawData = req.body?.data;
