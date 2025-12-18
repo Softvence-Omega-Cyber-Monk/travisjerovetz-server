@@ -12,7 +12,7 @@ const generateJwt = async (data) => {
         email: data.email,
         role: data.role
     };
-    const accessToken = jsonwebtoken_1.default.sign(payload, env_1.envVers.ACCESS_SECRATE, { expiresIn: "7d" });
+    const accessToken = jsonwebtoken_1.default.sign(payload, env_1.envVers.ACCESS_SECRATE, { expiresIn: "10s" });
     const refreshToken = jsonwebtoken_1.default.sign(payload, env_1.envVers.REFRESH_SECRATE, { expiresIn: "30d" });
     return {
         accessToken,

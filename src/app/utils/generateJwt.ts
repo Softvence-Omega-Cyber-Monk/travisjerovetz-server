@@ -9,7 +9,7 @@ export const generateJwt = async (data: Partial<IUser>) => {
         role: data.role
     };
 
-    const accessToken = jwt.sign(payload, envVers.ACCESS_SECRATE, { expiresIn: "7d" });
+    const accessToken = jwt.sign(payload, envVers.ACCESS_SECRATE, { expiresIn: "10s" });
 
     const refreshToken = jwt.sign(payload, envVers.REFRESH_SECRATE, { expiresIn: "30d" });
 
