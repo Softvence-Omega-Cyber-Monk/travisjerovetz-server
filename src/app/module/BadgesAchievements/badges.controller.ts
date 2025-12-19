@@ -5,6 +5,8 @@ import { Types } from "mongoose";
 import { Badges } from "./badges.model";
 import { sendResponse } from "../../utils/sendResponse";
 import AppError from "../../utils/AppError";
+import { badgesServices } from "./badges.services";
+import { User } from "../user/user.model";
 
 
 const getUserBadges = async (req: Request, res: Response) => {
@@ -218,8 +220,27 @@ const updatebadges = catchAsync(async (req: Request, res: Response, next: NextFu
 );
 
 
+const getUserBadgesAndLockedBadges = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    const userId = req.authUser.userId;
+
+    const result = await badgesServices.getUserBadgesStatus(userId);
+    const user = await User.findById(userId);
+
+    sendResponse(res, {
+        success: true,
+        statusCode: 200,
+        message: "User badges retrived successfully",
+        data: {
+            totalPoient: user?.totalPoints,
+            ...result,
+        }
+    })
+
+})
+
 export const badgesController = {
     getUserBadges,
     getAllBadgesByAdmin,
-    updatebadges
+    updatebadges,
+    getUserBadgesAndLockedBadges
 }

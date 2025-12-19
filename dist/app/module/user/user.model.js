@@ -34,6 +34,7 @@ const userSchema = new mongoose_1.Schema({
     },
     avatarUrl: {
         type: String,
+        default: null
     },
     dateOfBirth: {
         type: Date,

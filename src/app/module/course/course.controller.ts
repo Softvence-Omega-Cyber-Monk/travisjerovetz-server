@@ -38,9 +38,7 @@ const createCourse = catchAsync(async (req, res, next: NextFunction) => {
 const getCourseWithProgress = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
 
     const { courseId } = req.params;
-    console.log("Course Id", courseId)
     const userId = req.authUser?.userId;
-    console.log("UserId", userId);
     if (!userId || !courseId) {
         throw new AppError(400, "userId & courseId are required");
     }

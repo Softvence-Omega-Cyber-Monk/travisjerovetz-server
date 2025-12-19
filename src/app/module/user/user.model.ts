@@ -40,6 +40,7 @@ const userSchema = new Schema<IUser>(
 
         avatarUrl: {
             type: String,
+            default: null
         },
 
         dateOfBirth: {
