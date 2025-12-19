@@ -12,6 +12,7 @@ const course_model_1 = require("./course.model");
 const QueryBuilder_1 = require("../../utils/QueryBuilder");
 const UserCourseProgress_model_1 = require("../userCourseProgress/UserCourseProgress.model");
 const mongoose_1 = require("mongoose");
+const recent_activity_model_1 = require("../RecentActivity/recent.activity.model");
 const createCourse = (0, catchAsync_1.default)(async (req, res, next) => {
     const bodyData = req.body.data ? JSON.parse(req.body.data) : {};
     const files = req.files;
@@ -21,6 +22,10 @@ const createCourse = (0, catchAsync_1.default)(async (req, res, next) => {
         instructorProfile: files?.instructorProfile?.[0]?.path || "",
     };
     const result = await course_service_1.courseServices.createCourse(payload);
+    await recent_activity_model_1.RecentActivity.create({
+        title: "Lounched New Course",
+        description: `${result.title} Lounched the platform`
+    });
     (0, sendResponse_1.sendResponse)(res, {
         success: true,
         statusCode: 201,

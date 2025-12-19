@@ -11,8 +11,13 @@ const AppError_1 = __importDefault(require("../../utils/AppError"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const user_model_1 = require("./user.model");
 const createAccessTokenUseRefreshToken_1 = require("../../utils/createAccessTokenUseRefreshToken");
+const recent_activity_model_1 = require("../RecentActivity/recent.activity.model");
 const SignUp = (0, catchAsync_1.default)(async (req, res, next) => {
     const result = await user_services_1.UserServices.signUp(req.body);
+    await recent_activity_model_1.RecentActivity.create({
+        title: "New User Registration",
+        description: `${result?.fullName} joined the platform`
+    });
     (0, sendResponse_1.sendResponse)(res, {
         success: true,
         statusCode: 201,
@@ -150,6 +155,10 @@ const deleteUser = (0, catchAsync_1.default)(async (req, res, next) => {
     const result = await user_model_1.User.findByIdAndDelete(userId);
     if (!result)
         throw new AppError_1.default(404, "User not found");
+    await recent_activity_model_1.RecentActivity.create({
+        title: "New User Registration",
+        description: `Admin Deleted ${result?.fullName} Account`
+    });
     (0, sendResponse_1.sendResponse)(res, {
         success: true,
         statusCode: 200,

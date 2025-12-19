@@ -6,9 +6,16 @@ import AppError from "../../utils/AppError";
 import bcrypt from "bcrypt"
 import { User } from "./user.model";
 import { createAccessTokenUseRefreshToken } from "../../utils/createAccessTokenUseRefreshToken";
+import { RecentActivity } from "../RecentActivity/recent.activity.model";
 
 const SignUp = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const result = await UserServices.signUp(req.body);
+
+
+    await RecentActivity.create({
+        title: "New User Registration",
+        description: `${result?.fullName} joined the platform`
+    })
 
     sendResponse(res, {
         success: true,
@@ -81,62 +88,62 @@ const SingIn = catchAsync(async (req: Request, res: Response, next: NextFunction
 
 
 const updateUserProfile = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-        const userId = req.params.id;
+    const userId = req.params.id;
 
-        if (!userId) {
-            return next(new AppError(400, "User ID is required"));
-        }
-
-        const payload = req.body;
-        const file = req.file; // 🔥 multer file
-
-        const updateData: Record<string, any> = {};
-
-        // ✅ body থেকে valid field নাও
-        for (const key in payload) {
-            const value = payload[key];
-
-            if (value !== null && value !== undefined) {
-                if (typeof value === "string" && value.trim() === "") continue;
-                updateData[key] = value;
-            }
-        }
-
-        // ✅ avatarUrl file থাকলে সেট করো
-        if (file) {
-            // যদি local upload
-            updateData.avatarUrl = file.path;
-
-            // যদি cloudinary / s3 হলে
-            // updateData.avatarUrl = file.location;
-        }
-
-        // ❌ sensitive field remove
-        delete updateData.password;
-        delete updateData.lastLogin;
-        delete updateData.role;
-        delete updateData.totalPoints;
-
-        if (Object.keys(updateData).length === 0) {
-            return next(new AppError(400, "No valid fields to update"));
-        }
-
-        const updatedUser = await User.findByIdAndUpdate(
-            userId,
-            { $set: updateData },
-            { new: true, runValidators: true }
-        ).select("-password -lastLogin");
-
-        if (!updatedUser) {
-            return next(new AppError(404, "User not found"));
-        }
-
-        res.status(200).json({
-            success: true,
-            message: "Profile updated successfully",
-            data: updatedUser,
-        });
+    if (!userId) {
+        return next(new AppError(400, "User ID is required"));
     }
+
+    const payload = req.body;
+    const file = req.file; // 🔥 multer file
+
+    const updateData: Record<string, any> = {};
+
+    // ✅ body থেকে valid field নাও
+    for (const key in payload) {
+        const value = payload[key];
+
+        if (value !== null && value !== undefined) {
+            if (typeof value === "string" && value.trim() === "") continue;
+            updateData[key] = value;
+        }
+    }
+
+    // ✅ avatarUrl file থাকলে সেট করো
+    if (file) {
+        // যদি local upload
+        updateData.avatarUrl = file.path;
+
+        // যদি cloudinary / s3 হলে
+        // updateData.avatarUrl = file.location;
+    }
+
+    // ❌ sensitive field remove
+    delete updateData.password;
+    delete updateData.lastLogin;
+    delete updateData.role;
+    delete updateData.totalPoints;
+
+    if (Object.keys(updateData).length === 0) {
+        return next(new AppError(400, "No valid fields to update"));
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(
+        userId,
+        { $set: updateData },
+        { new: true, runValidators: true }
+    ).select("-password -lastLogin");
+
+    if (!updatedUser) {
+        return next(new AppError(404, "User not found"));
+    }
+
+    res.status(200).json({
+        success: true,
+        message: "Profile updated successfully",
+        data: updatedUser,
+    });
+}
 );
 
 
@@ -198,6 +205,11 @@ const deleteUser = catchAsync(async (req: Request, res: Response, next: NextFunc
     const result = await User.findByIdAndDelete(userId);
 
     if (!result) throw new AppError(404, "User not found");
+
+    await RecentActivity.create({
+        title: "New User Registration",
+        description: `Admin Deleted ${result?.fullName} Account`
+    })
 
     sendResponse(res, {
         success: true,
