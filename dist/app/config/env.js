@@ -30,10 +30,10 @@ const envChecker = () => {
             ADMIN_NAME: process.env.ADMIN_NAME,
         },
         EMAIL_SENDER: {
-            SMTP_HOST: process.env.ADMIN_EMAIL,
-            SMTP_PORT: process.env.ADMIN_EMAIL,
-            SMTP_PASS: process.env.ADMIN_EMAIL,
-            SMTP_USER: process.env.ADMIN_EMAIL,
+            SMTP_HOST: process.env.SMTP_HOST,
+            SMTP_PORT: process.env.SMTP_PORT,
+            SMTP_PASS: process.env.SMTP_PASS,
+            SMTP_USER: process.env.SMTP_USER,
         }
     };
 };
