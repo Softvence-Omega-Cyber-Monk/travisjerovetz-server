@@ -8,5 +8,7 @@ export declare const UserController: {
     getMe: (req: Request, res: Response, next: NextFunction) => void;
     deleteUser: (req: Request, res: Response, next: NextFunction) => void;
     changePassword: (req: Request, res: Response, next: NextFunction) => void;
+    getAllEmployee: (req: Request, res: Response, next: NextFunction) => void;
+    createEmployee: (req: Request, res: Response, next: NextFunction) => void;
 };
 //# sourceMappingURL=user.controller.d.ts.map

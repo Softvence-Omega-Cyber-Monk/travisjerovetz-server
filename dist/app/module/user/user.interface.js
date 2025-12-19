@@ -5,5 +5,6 @@ var IRole;
 (function (IRole) {
     IRole["ADMIN"] = "ADMIN";
     IRole["USER"] = "USER";
+    IRole["EMPLOYEE"] = "EMPLOYEE";
 })(IRole || (exports.IRole = IRole = {}));
 //# sourceMappingURL=user.interface.js.map

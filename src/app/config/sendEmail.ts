@@ -1,54 +1,55 @@
-// import nodemailer from "nodemailer";
-// import { envVar } from "../config/env";
-// import path from "path";
-// import ejs from "ejs";
-// import AppError from "../utils/AppError";
+import nodemailer from "nodemailer";
 
-// const transport = nodemailer.createTransport({
-//     secure: true,
-//     auth: {
-//         user: envVar.EMAIL_SENDER.SMTP_USER,
-//         pass: envVar.EMAIL_SENDER.SMTP_PASS
-//     },
-//     port: Number(envVar.EMAIL_SENDER.SMTP_PORT),
-//     host: envVar.EMAIL_SENDER.SMTP_HOST
-// });
+import path from "path";
+import ejs from "ejs";
+import AppError from "../utils/AppError";
+import { envVers } from "./env";
 
-// interface sendEmailsOptions {
-//     to: string,
-//     subject: string,
-//     templateName?: string,
-//     templateData?: Record<string, any>
-//     attachments?: {
-//         filename: string,
-//         content: Buffer | string,
-//         contentType: string
-//     }[]
-// };
+const transport = nodemailer.createTransport({
+    secure: true,
+    auth: {
+        user: envVers.EMAIL_SENDER.SMTP_USER,
+        pass: envVers.EMAIL_SENDER.SMTP_PASS
+    },
+    port: Number(envVers.EMAIL_SENDER.SMTP_PORT),
+    host: envVers.EMAIL_SENDER.SMTP_HOST
+});
 
-// export const sendEmail = async ({ to, subject, templateName, templateData, attachments }: sendEmailsOptions) => {
-//     try {
+interface sendEmailsOptions {
+    to: string,
+    subject: string,
+    templateName?: string,
+    templateData?: Record<string, any>
+    attachments?: {
+        filename: string,
+        content: Buffer | string,
+        contentType: string
+    }[]
+};
 
-//         const templatePath = path.join(__dirname, `templates/${templateName}.ejs`);
+export const sendEmail = async ({ to, subject, templateName, templateData, attachments }: sendEmailsOptions) => {
+    try {
 
-//         const html = await ejs.renderFile(templatePath, templateData);
+        const templatePath = path.join(__dirname, `templates/${templateName}.ejs`);
 
-//         const info = await transport.sendMail({
-//             from: envVar.EMAIL_SENDER.SMTP_FORM,
-//             to: to,
-//             subject: subject,
-//             html: html,
-//             attachments: attachments?.map((item) => ({
-//                 filename: item.filename,
-//                 content: item.content,
-//                 contentType: item.contentType
-//             }))
-//         });
+        const html = await ejs.renderFile(templatePath, templateData);
 
-//         console.log(`/21131/ Email send to ${to} : ${info.messageId}`);
+        const info = await transport.sendMail({
+            from: envVers.EMAIL_SENDER.SMTP_USER,
+            to: to,
+            subject: subject,
+            html: html,
+            attachments: attachments?.map((item) => ({
+                filename: item.filename,
+                content: item.content,
+                contentType: item.contentType
+            }))
+        });
 
-//     } catch (error) {
-//         console.log(`Email Error`);
-//         throw new AppError(400, "Email otp send faild.");
-//     }
-// };
+        console.log(`/21131/ Email send to ${to} : ${info.messageId}`);
+
+    } catch (error) {
+        console.log(`Email Error` , error);
+        throw new AppError(400, "Email otp send faild.");
+    }
+};

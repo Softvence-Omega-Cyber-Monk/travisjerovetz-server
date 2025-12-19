@@ -1,7 +1,7 @@
 import AppError from "../../utils/AppError";
 import { generateJwt } from "../../utils/generateJwt";
 import { QueryBuilder } from "../../utils/QueryBuilder";
-import { IUser } from "./user.interface";
+import { IRole, IUser } from "./user.interface";
 import { User } from "./user.model";
 import bcrypt from "bcrypt"
 
@@ -24,6 +24,32 @@ const signUp = async (data: Partial<IUser>) => {
         email: data.email,
         password: hashedPassword,
         phone: data.phone
+    });
+
+    // remove password
+    const { password, ...rest } = newUser.toObject();
+    return rest;
+};
+const createEmployee = async (data: Partial<IUser>) => {
+
+    if (!data.email || !data.password || !data.fullName) {
+        throw new AppError(400, "fullName, email & password are required");
+    }
+
+    const existUser = await User.findOne({ email: data.email });
+
+    if (existUser) {
+        throw new AppError(400, `${data.email} already exists`);
+    }
+
+    const hashedPassword = await bcrypt.hash(data.password, 10);
+
+    const newUser = await User.create({
+        fullName: data.fullName,
+        email: data.email,
+        password: hashedPassword,
+        phone: data.phone,
+        role: IRole.EMPLOYEE
     });
 
     // remove password
@@ -84,9 +110,33 @@ const getAllUser = async (query: Record<string, string>) => {
         data: result
     };
 };
+const getAllEmployee = async (query: Record<string, string>) => {
+    // base query
+    const userQuery = User.find({ role: "EMPLOYEE" });
+
+    // QueryBuilder use
+    const queryBuilder = new QueryBuilder(userQuery, query)
+        .filter()                               // filter
+        .search(["phone", "email", "fullName"])  // searchable fields
+        .sort()                                 // sort
+        .paginate();                            // pagination
+
+    // final data
+    const result = await queryBuilder.build();
+
+    // meta data (pagination info)
+    const meta = await queryBuilder.getMeta();
+
+    return {
+        meta,
+        data: result
+    };
+};
 
 export const UserServices = {
     signUp,
     signIn,
-    getAllUser
+    getAllUser,
+    getAllEmployee,
+    createEmployee
 }
