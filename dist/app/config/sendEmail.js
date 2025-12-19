@@ -10,35 +10,32 @@ const ejs_1 = __importDefault(require("ejs"));
 const AppError_1 = __importDefault(require("../utils/AppError"));
 const env_1 = require("./env");
 const transport = nodemailer_1.default.createTransport({
-    secure: true,
+    service: "gmail", // Gmail হলে host/port auto set হবে
     auth: {
         user: env_1.envVers.EMAIL_SENDER.SMTP_USER,
-        pass: env_1.envVers.EMAIL_SENDER.SMTP_PASS
+        pass: env_1.envVers.EMAIL_SENDER.SMTP_PASS, // Gmail App Password দিতে হবে
     },
-    port: Number(env_1.envVers.EMAIL_SENDER.SMTP_PORT),
-    host: env_1.envVers.EMAIL_SENDER.SMTP_HOST
 });
-;
-const sendEmail = async ({ to, subject, templateName, templateData, attachments }) => {
+const sendEmail = async ({ to, subject, templateName, templateData, attachments, }) => {
     try {
-        const templatePath = path_1.default.join(__dirname, `templates/${templateName}.ejs`);
+        const templatePath = path_1.default.resolve(__dirname, "templates", `${templateName}.ejs`);
         const html = await ejs_1.default.renderFile(templatePath, templateData);
         const info = await transport.sendMail({
             from: env_1.envVers.EMAIL_SENDER.SMTP_USER,
-            to: to,
-            subject: subject,
-            html: html,
+            to,
+            subject,
+            html,
             attachments: attachments?.map((item) => ({
                 filename: item.filename,
                 content: item.content,
-                contentType: item.contentType
-            }))
+                contentType: item.contentType,
+            })),
         });
-        console.log(`/21131/ Email send to ${to} : ${info.messageId}`);
+        console.log(`/21131/ Email sent to ${to} : ${info.messageId}`);
     }
     catch (error) {
-        console.log(`Email Error`, error);
-        throw new AppError_1.default(400, "Email otp send faild.");
+        console.error("Email Error:", error); // আসল error দেখাবে
+        throw new AppError_1.default(400, "Email send failed.");
     }
 };
 exports.sendEmail = sendEmail;

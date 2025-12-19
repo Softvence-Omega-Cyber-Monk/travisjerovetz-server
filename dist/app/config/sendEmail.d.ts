@@ -9,6 +9,6 @@ interface sendEmailsOptions {
         contentType: string;
     }[];
 }
-export declare const sendEmail: ({ to, subject, templateName, templateData, attachments }: sendEmailsOptions) => Promise<void>;
+export declare const sendEmail: ({ to, subject, templateName, templateData, attachments, }: sendEmailsOptions) => Promise<void>;
 export {};
 //# sourceMappingURL=sendEmail.d.ts.map
