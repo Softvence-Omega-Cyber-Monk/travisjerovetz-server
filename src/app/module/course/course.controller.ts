@@ -8,6 +8,7 @@ import { QueryBuilder } from "../../utils/QueryBuilder";
 import { UserCourseProgress } from "../userCourseProgress/UserCourseProgress.model";
 import { IUpCourse } from "./course.interface";
 import { Types } from "mongoose";
+import { RecentActivity } from "../RecentActivity/recent.activity.model";
 
 
 const createCourse = catchAsync(async (req, res, next: NextFunction) => {
@@ -26,6 +27,12 @@ const createCourse = catchAsync(async (req, res, next: NextFunction) => {
     };
 
     const result = await courseServices.createCourse(payload);
+
+
+    await RecentActivity.create({
+        title: "Lounched New Course",
+        description: `${result.title} Lounched the platform`
+    })
 
     sendResponse(res, {
         success: true,

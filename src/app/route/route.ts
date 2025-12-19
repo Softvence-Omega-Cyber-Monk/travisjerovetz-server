@@ -7,6 +7,7 @@ import enrollRouter from "../module/CourseEnroll/enroll.router";
 import analyticsRouter from "../module/analytics/analytics.route";
 import badgesRouter from "../module/BadgesAchievements/badges.router";
 import supportRouter from "../module/Support/support.router";
+import RecentActivityRouter from "../module/RecentActivity/recent.avtivity.router";
 
 
 
@@ -47,6 +48,10 @@ export const moduleRoute = [
     {
         path: "/support",
         routes: supportRouter
-    }
+    },
+    {
+        path: "/recent",
+        routes: RecentActivityRouter
+    },
 ];
 
