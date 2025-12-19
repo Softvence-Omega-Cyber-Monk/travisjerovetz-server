@@ -30,6 +30,7 @@ export interface IUser {
 }
 export declare enum IRole {
     ADMIN = "ADMIN",
-    USER = "USER"
+    USER = "USER",
+    EMPLOYEE = "EMPLOYEE"
 }
 //# sourceMappingURL=user.interface.d.ts.map

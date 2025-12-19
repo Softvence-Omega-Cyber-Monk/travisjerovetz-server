@@ -7,7 +7,7 @@ exports.envVers = void 0;
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 const envChecker = () => {
-    const requiredEnv = ["MONGO_URI", "PORT", "DEV_ENVIRONMENT", "ACCESS_SECRATE", "REFRESH_SECRATE", "CLOUDINARY_API_SECRATE", "CLOUDINARY_CLOUD_NAME", "CLOUDINARY_API_KEY", "ADMIN_EMAIL", "ADMIN_PASSWORD", "ADMIN_NAME"];
+    const requiredEnv = ["MONGO_URI", "PORT", "DEV_ENVIRONMENT", "ACCESS_SECRATE", "REFRESH_SECRATE", "CLOUDINARY_API_SECRATE", "CLOUDINARY_CLOUD_NAME", "CLOUDINARY_API_KEY", "ADMIN_EMAIL", "ADMIN_PASSWORD", "ADMIN_NAME", "SMTP_HOST", "SMTP_PORT", "SMTP_PASS", "SMTP_USER"];
     requiredEnv.forEach((key) => {
         if (!process.env[key]) {
             throw new Error(`Required env messing : ${key}`);
@@ -28,6 +28,12 @@ const envChecker = () => {
             ADMIN_EMAIL: process.env.ADMIN_EMAIL,
             ADMIN_PASSWORD: process.env.ADMIN_PASSWORD,
             ADMIN_NAME: process.env.ADMIN_NAME,
+        },
+        EMAIL_SENDER: {
+            SMTP_HOST: process.env.ADMIN_EMAIL,
+            SMTP_PORT: process.env.ADMIN_EMAIL,
+            SMTP_PASS: process.env.ADMIN_EMAIL,
+            SMTP_USER: process.env.ADMIN_EMAIL,
         }
     };
 };

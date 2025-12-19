@@ -36,5 +36,6 @@ export interface IUser {
 
 export enum IRole {
     ADMIN = "ADMIN",
-    USER = "USER"
+    USER = "USER",
+    EMPLOYEE = "EMPLOYEE"
 }

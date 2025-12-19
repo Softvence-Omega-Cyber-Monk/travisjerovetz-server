@@ -7,6 +7,7 @@ import bcrypt from "bcrypt"
 import { User } from "./user.model";
 import { createAccessTokenUseRefreshToken } from "../../utils/createAccessTokenUseRefreshToken";
 import { RecentActivity } from "../RecentActivity/recent.activity.model";
+import { sendEmail } from "../../config/sendEmail";
 
 const SignUp = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const result = await UserServices.signUp(req.body);
@@ -15,7 +16,20 @@ const SignUp = catchAsync(async (req: Request, res: Response, next: NextFunction
     await RecentActivity.create({
         title: "New User Registration",
         description: `${result?.fullName} joined the platform`
-    })
+    });
+
+    await sendEmail({
+        to: result.email,
+        subject: "Welcome to LMS",
+        templateName: "welcome", // welcome.ejs
+        templateData: {
+            appName: "LMS",
+            name: result.fullName,
+            email: result.email,
+            password: req.body.password,
+            loginUrl: "https://travisjerovetz-frontend.vercel.app"
+        }
+    });
 
     sendResponse(res, {
         success: true,
@@ -121,7 +135,6 @@ const updateUserProfile = catchAsync(async (req: Request, res: Response, next: N
     // ❌ sensitive field remove
     delete updateData.password;
     delete updateData.lastLogin;
-    delete updateData.role;
     delete updateData.totalPoints;
 
     if (Object.keys(updateData).length === 0) {
@@ -152,6 +165,25 @@ const getAllUser = catchAsync(async (req: Request, res: Response, next: NextFunc
     const query = req.query;
 
     const result = await UserServices.getAllUser(query as Record<string, string>);
+
+
+    sendResponse(res, {
+        success: true,
+        statusCode: 200,
+        message: "All User Retrived Successfully",
+        data: result.data,
+        meta: result.meta
+    })
+
+});
+
+
+
+const getAllEmployee = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    const query = req.query;
+
+    const result = await UserServices.getAllEmployee(query as Record<string, string>);
+
 
 
     sendResponse(res, {
@@ -262,6 +294,32 @@ const changePassword = catchAsync(async (req: Request, res: Response, next: Next
 }
 );
 
+const createEmployee = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    const result = await UserServices.createEmployee(req.body);
+
+    await sendEmail({
+        to: result.email,
+        subject: "Welcome to LMS",
+        templateName: "welcome", // welcome.ejs
+        templateData: {
+            appName: "LMS",
+            name: result.fullName,
+            email: result.email,
+            password: req.body.password,
+            loginUrl: "https://travisjerovetz-frontend.vercel.app"
+        }
+    });
+
+    sendResponse(res, {
+        success: true,
+        statusCode: 200,
+        message: "Employee Creation success",
+        data: result
+    })
+
+
+})
+
 export const UserController = {
     SignUp,
     SingIn,
@@ -270,5 +328,7 @@ export const UserController = {
     getAllUser,
     getMe,
     deleteUser,
-    changePassword
+    changePassword,
+    getAllEmployee,
+    createEmployee
 }

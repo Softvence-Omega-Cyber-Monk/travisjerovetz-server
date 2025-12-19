@@ -12,11 +12,24 @@ const bcrypt_1 = __importDefault(require("bcrypt"));
 const user_model_1 = require("./user.model");
 const createAccessTokenUseRefreshToken_1 = require("../../utils/createAccessTokenUseRefreshToken");
 const recent_activity_model_1 = require("../RecentActivity/recent.activity.model");
+const sendEmail_1 = require("../../config/sendEmail");
 const SignUp = (0, catchAsync_1.default)(async (req, res, next) => {
     const result = await user_services_1.UserServices.signUp(req.body);
     await recent_activity_model_1.RecentActivity.create({
         title: "New User Registration",
         description: `${result?.fullName} joined the platform`
+    });
+    await (0, sendEmail_1.sendEmail)({
+        to: result.email,
+        subject: "Welcome to LMS",
+        templateName: "welcome", // welcome.ejs
+        templateData: {
+            appName: "LMS",
+            name: result.fullName,
+            email: result.email,
+            password: req.body.password,
+            loginUrl: "https://travisjerovetz-frontend.vercel.app"
+        }
     });
     (0, sendResponse_1.sendResponse)(res, {
         success: true,
@@ -96,7 +109,6 @@ const updateUserProfile = (0, catchAsync_1.default)(async (req, res, next) => {
     // ❌ sensitive field remove
     delete updateData.password;
     delete updateData.lastLogin;
-    delete updateData.role;
     delete updateData.totalPoints;
     if (Object.keys(updateData).length === 0) {
         return next(new AppError_1.default(400, "No valid fields to update"));
@@ -114,6 +126,17 @@ const updateUserProfile = (0, catchAsync_1.default)(async (req, res, next) => {
 const getAllUser = (0, catchAsync_1.default)(async (req, res, next) => {
     const query = req.query;
     const result = await user_services_1.UserServices.getAllUser(query);
+    (0, sendResponse_1.sendResponse)(res, {
+        success: true,
+        statusCode: 200,
+        message: "All User Retrived Successfully",
+        data: result.data,
+        meta: result.meta
+    });
+});
+const getAllEmployee = (0, catchAsync_1.default)(async (req, res, next) => {
+    const query = req.query;
+    const result = await user_services_1.UserServices.getAllEmployee(query);
     (0, sendResponse_1.sendResponse)(res, {
         success: true,
         statusCode: 200,
@@ -192,6 +215,27 @@ const changePassword = (0, catchAsync_1.default)(async (req, res, next) => {
         data: null,
     });
 });
+const createEmployee = (0, catchAsync_1.default)(async (req, res, next) => {
+    const result = await user_services_1.UserServices.createEmployee(req.body);
+    await (0, sendEmail_1.sendEmail)({
+        to: result.email,
+        subject: "Welcome to LMS",
+        templateName: "welcome", // welcome.ejs
+        templateData: {
+            appName: "LMS",
+            name: result.fullName,
+            email: result.email,
+            password: req.body.password,
+            loginUrl: "https://travisjerovetz-frontend.vercel.app"
+        }
+    });
+    (0, sendResponse_1.sendResponse)(res, {
+        success: true,
+        statusCode: 200,
+        message: "Employee Creation success",
+        data: result
+    });
+});
 exports.UserController = {
     SignUp,
     SingIn,
@@ -200,6 +244,8 @@ exports.UserController = {
     getAllUser,
     getMe,
     deleteUser,
-    changePassword
+    changePassword,
+    getAllEmployee,
+    createEmployee
 };
 //# sourceMappingURL=user.controller.js.map

@@ -14,6 +14,12 @@ interface IEnv {
         CLOUDINARY_API_KEY: string;
         CLOUDINARY_CLOUD_NAME: string;
     };
+    EMAIL_SENDER: {
+        SMTP_HOST: string;
+        SMTP_PORT: string;
+        SMTP_PASS: string;
+        SMTP_USER: string;
+    };
 }
 export declare const envVers: IEnv;
 export {};
