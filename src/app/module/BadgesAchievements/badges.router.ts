@@ -6,8 +6,9 @@ import { multerUpload } from "../../config/multer.config";
 
 const badgesRouter = Router();
 
-badgesRouter.get("/getAllBadgesByUser" , checkAuths() , badgesController.getUserBadges);
-badgesRouter.get("/getAllBadgesByAdmin" , checkAuths(IRole.ADMIN) , badgesController.getAllBadgesByAdmin);
-badgesRouter.patch("/updateBadges/:id" , checkAuths(IRole.ADMIN) , multerUpload.single("logo") , badgesController.updatebadges);
+badgesRouter.get("/getAllBadgesByUser", checkAuths(), badgesController.getUserBadges);
+badgesRouter.get("/getAllBadgesByAdmin", checkAuths(IRole.ADMIN), badgesController.getAllBadgesByAdmin);
+badgesRouter.get("/getTotalBadgesByUser", checkAuths(), badgesController.getUserBadgesAndLockedBadges);
+badgesRouter.patch("/updateBadges/:id", checkAuths(IRole.ADMIN), multerUpload.single("logo"), badgesController.updatebadges);
 
 export default badgesRouter;

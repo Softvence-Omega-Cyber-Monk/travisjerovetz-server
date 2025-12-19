@@ -10,6 +10,8 @@ const mongoose_1 = require("mongoose");
 const badges_model_1 = require("./badges.model");
 const sendResponse_1 = require("../../utils/sendResponse");
 const AppError_1 = __importDefault(require("../../utils/AppError"));
+const badges_services_1 = require("./badges.services");
+const user_model_1 = require("../user/user.model");
 const getUserBadges = async (req, res) => {
     try {
         const userId = req.authUser?.userId;
@@ -184,9 +186,24 @@ const updatebadges = (0, catchAsync_1.default)(async (req, res, next) => {
         data: updatedBadge,
     });
 });
+const getUserBadgesAndLockedBadges = (0, catchAsync_1.default)(async (req, res, next) => {
+    const userId = req.authUser.userId;
+    const result = await badges_services_1.badgesServices.getUserBadgesStatus(userId);
+    const user = await user_model_1.User.findById(userId);
+    (0, sendResponse_1.sendResponse)(res, {
+        success: true,
+        statusCode: 200,
+        message: "User badges retrived successfully",
+        data: {
+            totalPoient: user?.totalPoints,
+            ...result,
+        }
+    });
+});
 exports.badgesController = {
     getUserBadges,
     getAllBadgesByAdmin,
-    updatebadges
+    updatebadges,
+    getUserBadgesAndLockedBadges
 };
 //# sourceMappingURL=badges.controller.js.map

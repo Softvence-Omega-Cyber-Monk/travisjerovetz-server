@@ -29,14 +29,50 @@ const SingIn = (0, catchAsync_1.default)(async (req, res, next) => {
         data: result
     });
 });
+// const updateUserProfile = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+//     const userId = req.params.id;
+//     if (!userId) {
+//         return next(new AppError(400, "User ID is required"));
+//     }
+//     const payload = req.body;
+//     const updateData: Record<string, any> = {};
+//     // Only valid value update
+//     for (const key in payload) {
+//         const value = payload[key];
+//         if (value !== null && value !== undefined) {
+//             if (typeof value === "string" && value.trim() === "") continue;
+//             updateData[key] = value;
+//         }
+//     }
+//     // Never update these
+//     delete updateData.password;
+//     delete updateData.lastLogin;
+//     if (Object.keys(updateData).length === 0) {
+//         return next(new AppError(400, "No valid fields to update"));
+//     }
+//     const updatedUser = await User.findByIdAndUpdate(
+//         userId,
+//         { $set: updateData },
+//         { new: true, runValidators: true }
+//     ).select("-password -lastLogin");
+//     if (!updatedUser) {
+//         return next(new AppError(404, "User not found"));
+//     }
+//     res.status(200).json({
+//         status: "success",
+//         data: updatedUser,
+//     });
+// }
+// );
 const updateUserProfile = (0, catchAsync_1.default)(async (req, res, next) => {
     const userId = req.params.id;
     if (!userId) {
         return next(new AppError_1.default(400, "User ID is required"));
     }
     const payload = req.body;
+    const file = req.file; // 🔥 multer file
     const updateData = {};
-    // Only valid value update
+    // ✅ body থেকে valid field নাও
     for (const key in payload) {
         const value = payload[key];
         if (value !== null && value !== undefined) {
@@ -45,9 +81,18 @@ const updateUserProfile = (0, catchAsync_1.default)(async (req, res, next) => {
             updateData[key] = value;
         }
     }
-    // Never update these
+    // ✅ avatarUrl file থাকলে সেট করো
+    if (file) {
+        // যদি local upload
+        updateData.avatarUrl = file.path;
+        // যদি cloudinary / s3 হলে
+        // updateData.avatarUrl = file.location;
+    }
+    // ❌ sensitive field remove
     delete updateData.password;
     delete updateData.lastLogin;
+    delete updateData.role;
+    delete updateData.totalPoints;
     if (Object.keys(updateData).length === 0) {
         return next(new AppError_1.default(400, "No valid fields to update"));
     }
@@ -56,7 +101,8 @@ const updateUserProfile = (0, catchAsync_1.default)(async (req, res, next) => {
         return next(new AppError_1.default(404, "User not found"));
     }
     res.status(200).json({
-        status: "success",
+        success: true,
+        message: "Profile updated successfully",
         data: updatedUser,
     });
 });
