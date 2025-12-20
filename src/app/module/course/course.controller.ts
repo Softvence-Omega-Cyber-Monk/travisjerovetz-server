@@ -365,7 +365,40 @@ const deleteCourse = catchAsync(async (req: Request, res: Response, next: NextFu
         data: null
     })
 
-})
+});
+
+
+const recomandationCourse = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+
+        const categories = await Course.distinct("category");
+
+        // 2. Prottek category theke latest 2 course fetch koro
+        const coursesArray = await Promise.all(
+            categories.map(async (category) => {
+                const courses = await Course.find({ category })
+                    .sort({ createdAt: -1 }) // Latest first
+                    .limit(2); // Only latest 2
+                return courses;
+            })
+        );
+
+        // 3. Nested array ke flatten koro
+        const allCourses = coursesArray.flat();
+
+        return res.status(200).json({
+            success: true,
+            data: allCourses,
+        });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            success: false,
+            message: "Failed to fetch latest courses by category"
+        });
+    }
+};
+
 
 export const courseController = {
     createCourse,
@@ -373,5 +406,6 @@ export const courseController = {
     getAllCourse,
     updateCourseInformation,
     getSingleCourse,
-    deleteCourse
+    deleteCourse,
+    recomandationCourse
 }

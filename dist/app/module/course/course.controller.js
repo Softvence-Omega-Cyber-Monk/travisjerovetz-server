@@ -270,12 +270,38 @@ const deleteCourse = (0, catchAsync_1.default)(async (req, res, next) => {
         data: null
     });
 });
+const recomandationCourse = async (req, res, next) => {
+    try {
+        const categories = await course_model_1.Course.distinct("category");
+        // 2. Prottek category theke latest 2 course fetch koro
+        const coursesArray = await Promise.all(categories.map(async (category) => {
+            const courses = await course_model_1.Course.find({ category })
+                .sort({ createdAt: -1 }) // Latest first
+                .limit(2); // Only latest 2
+            return courses;
+        }));
+        // 3. Nested array ke flatten koro
+        const allCourses = coursesArray.flat();
+        return res.status(200).json({
+            success: true,
+            data: allCourses,
+        });
+    }
+    catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            success: false,
+            message: "Failed to fetch latest courses by category"
+        });
+    }
+};
 exports.courseController = {
     createCourse,
     getCourseWithProgress,
     getAllCourse,
     updateCourseInformation,
     getSingleCourse,
-    deleteCourse
+    deleteCourse,
+    recomandationCourse
 };
 //# sourceMappingURL=course.controller.js.map
