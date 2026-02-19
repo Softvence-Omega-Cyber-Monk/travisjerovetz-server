@@ -13,7 +13,7 @@ const boostServer = async () => {
         await mongoose.connect(envVers.MONGO_URI);
         console.log("MongoDb Connected Successfully");
         await seedAdmin();
-        server = app.listen(envVers.PORT, async () => {
+        server = app.listen(Number(envVers.PORT), '0.0.0.0', () => {
             console.log("Server runing successfully");
             console.log(`http://localhost:${envVers.PORT}`);
 

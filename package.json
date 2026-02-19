@@ -5,8 +5,11 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "ts-node-dev --respawn --transpile-only ./src/server.ts",
-    "build": "npm install --legacy-peer-deps && tsc",
-    "start": "node ./dist/server.js"
+    "build": "tsc",
+    "start": "node ./dist/server.js",
+    "pm2:start": "pm2 start ./dist/server.js --name travis-backend",
+    "pm2:stop": "pm2 stop travis-backend",
+    "pm2:delete": "pm2 delete travis-backend"
   },
   "keywords": [],
   "author": "",

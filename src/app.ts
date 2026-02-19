@@ -8,7 +8,13 @@ import { globalErrorhandler } from "./app/middleware/global.error.handler";
 export const app = express();
 
 app.use(cors({
-    origin: ["http://localhost:5173", "https://travisjerovetz-frontend.vercel.app", "*"],
+    origin: [
+        "http://localhost:5173",
+        "https://travisjerovetz-frontend.vercel.app",
+        "http://20.236.245.21:3000",
+        "http://20.236.245.21",
+        "*",
+    ],
     credentials: true,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"]
 }))
