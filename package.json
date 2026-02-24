@@ -5,13 +5,14 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "ts-node-dev --respawn --transpile-only ./src/server.ts",
-    "build": "tsc",
+    "build": "tsc && node scripts/watch-templates.js",
     "build:watch": "tsc --watch",
+    "templates:watch": "node scripts/watch-templates.js --watch",
     "start": "node ./dist/server.js",
     "pm2:start": "pm2 start ./dist/server.js --name travis-backend",
     "pm2:stop": "pm2 stop travis-backend",
     "pm2:delete": "pm2 delete travis-backend",
-    "pm2:watch": "npm run build:watch & pm2 start ecosystem.config.cjs --watch"
+    "pm2:watch": "concurrently -k \"npm:build:watch\" \"npm:templates:watch\" \"pm2 start ecosystem.config.cjs\""
   },
   "keywords": [],
   "author": "",
@@ -41,6 +42,7 @@
     "zod": "^3.22.2"
   },
   "devDependencies": {
+    "concurrently": "^9.1.2",
     "@types/cookie-parser": "^1.4.9",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.3",

@@ -5,8 +5,9 @@ module.exports = {
       script: "./dist/server.js",
       exec_mode: "fork",
       instances: 1,
-      watch: ["src"],
-      ignore_watch: ["node_modules", "dist", ".git"],
+      watch: ["dist"],
+      ignore_watch: ["node_modules", ".git", "src"],
+      watch_delay: 500,
       env: {
         NODE_ENV: "production"
       }

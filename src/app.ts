@@ -13,6 +13,7 @@ app.use(cors({
         "https://travisjerovetz-frontend.vercel.app",
         "http://20.236.245.21:3000",
         "http://20.236.245.21",
+        "http://learning.awcompaniesinc.com",
         "*",
     ],
     credentials: true,
@@ -27,7 +28,7 @@ app.use(cookieParser());
 // Module Route
 moduleRoute.forEach(item => app.use(`/api/v1${item.path}`, item.routes));
 
-app.get("/", (req: Request, res: Response) => {
+app.get("/api", (req: Request, res: Response) => {
     res.status(200).json({
         success: true,
         message: "Server runing success"
