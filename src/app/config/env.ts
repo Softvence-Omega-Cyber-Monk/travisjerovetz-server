@@ -23,11 +23,16 @@ interface IEnv {
         SMTP_PORT: string,
         SMTP_PASS: string,
         SMTP_USER: string,
+    },
+    MICROSOFT: {
+        MICROSOFT_REDIRECT_URL: string,
+        CLIENT_ID: string,
+        CLIENT_SECRATE: string
     }
 }
 
 const envChecker = (): IEnv => {
-    const requiredEnv: string[] = ["MONGO_URI", "PORT", "DEV_ENVIRONMENT", "ACCESS_SECRATE", "REFRESH_SECRATE", "CLOUDINARY_API_SECRATE", "CLOUDINARY_CLOUD_NAME", "CLOUDINARY_API_KEY", "ADMIN_EMAIL", "ADMIN_PASSWORD", "ADMIN_NAME", "SMTP_HOST", "SMTP_PORT", "SMTP_PASS", "SMTP_USER"];
+    const requiredEnv: string[] = ["MONGO_URI", "PORT", "DEV_ENVIRONMENT", "ACCESS_SECRATE", "REFRESH_SECRATE", "CLOUDINARY_API_SECRATE", "CLOUDINARY_CLOUD_NAME", "CLOUDINARY_API_KEY", "ADMIN_EMAIL", "ADMIN_PASSWORD", "ADMIN_NAME", "SMTP_HOST", "SMTP_PORT", "SMTP_PASS", "SMTP_USER", "MICROSOFT_REDIRECT_URL", "CLIENT_ID", "CLIENT_SECRATE"];
 
     requiredEnv.forEach((key) => {
         if (!process.env[key]) {
@@ -56,6 +61,11 @@ const envChecker = (): IEnv => {
             SMTP_PORT: process.env.SMTP_PORT as string,
             SMTP_PASS: process.env.SMTP_PASS as string,
             SMTP_USER: process.env.SMTP_USER as string,
+        },
+        MICROSOFT: {
+            MICROSOFT_REDIRECT_URL: process.env.MICROSOFT_REDIRECT_URL as string,
+            CLIENT_ID: process.env.CLIENT_ID as string,
+            CLIENT_SECRATE: process.env.CLIENT_SECRATE as string,
         }
     }
 };

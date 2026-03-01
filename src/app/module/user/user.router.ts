@@ -1,18 +1,59 @@
-import { Router } from "express";
+import { Request, Response, Router } from "express";
 import { UserController } from "./user.controller";
 import { checkAuths } from "../../middleware/protect";
 import { multerUpload } from "../../config/multer.config";
 import { IRole } from "./user.interface";
+import passport from "passport";
+import jwt from "jsonwebtoken";
+import { envVers } from "../../config/env";
 
 const UserRouter = Router();
 
 
+UserRouter.get("/microsoft",
+  passport.authenticate("microsoft")
+);
+
+interface AuthenticatedUser {
+  _id: string;
+  role: string;
+  email: string;
+}
+
+UserRouter.get(
+  "/microsoft/callback",
+  passport.authenticate("microsoft", { session: false }),
+  (req: Request, res: Response) => {
+    const user = req.user as AuthenticatedUser | undefined;
+
+    if (!user) {
+      return res.status(401).send({
+        success: false,
+        message: "User not authenticated",
+      });
+    }
+
+    const token = jwt.sign(
+      { userId: user._id, role: user.role, email: user.email },
+      envVers.ACCESS_SECRATE,
+      { expiresIn: "30d" }
+    );
+
+    res.status(200).send({
+      success: true,
+      message: "Login success",
+      token
+    });
+  }
+);
+
+
 UserRouter.post("/signIn", UserController.SingIn);
 UserRouter.post("/signUp", UserController.SignUp);
-UserRouter.post("/createEmployee" , checkAuths(IRole.ADMIN) , UserController.createEmployee);
+UserRouter.post("/createEmployee", checkAuths(IRole.ADMIN), UserController.createEmployee);
 UserRouter.post("/refreshToken", UserController.getAccessTokenUseRefreshToken)
 UserRouter.get("/get/allUser", UserController.getAllUser);
-UserRouter.get("/getAllEmployee" , checkAuths(IRole.ADMIN) , UserController.getAllEmployee);
+UserRouter.get("/getAllEmployee", checkAuths(IRole.ADMIN), UserController.getAllEmployee);
 UserRouter.get("/getMe", checkAuths(), UserController.getMe);
 UserRouter.patch("/changePassword", checkAuths(), UserController.changePassword);
 UserRouter.delete("/delete/:userId", checkAuths(), UserController.deleteUser);
