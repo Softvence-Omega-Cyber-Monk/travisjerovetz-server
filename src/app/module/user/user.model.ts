@@ -15,7 +15,6 @@ const userSchema = new Schema<IUser>(
     {
         fullName: {
             type: String,
-            required: true
         },
         email: {
             type: String,
@@ -26,8 +25,7 @@ const userSchema = new Schema<IUser>(
         },
 
         password: {
-            type: String,
-            required: true,
+            type: String
         },
 
         phone: {
@@ -45,6 +43,11 @@ const userSchema = new Schema<IUser>(
 
         dateOfBirth: {
             type: Date,
+        },
+
+        provider: {
+            type: String,
+            enum: ["CREADIENTIAL", "MICROSOFT"]
         },
 
         role: {
