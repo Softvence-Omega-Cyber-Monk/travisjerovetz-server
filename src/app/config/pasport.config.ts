@@ -21,8 +21,9 @@ passport.use(
 
         if (!user) {
           user = await User.create({
-            name: profile.displayName,
+            name: profile.displayName ? profile.displayName : null,
             email,
+            provider: "MICROSOFT",
             microsoftId: profile.id,
           });
         }

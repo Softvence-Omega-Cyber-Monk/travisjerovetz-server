@@ -24,6 +24,7 @@ export interface IUser {
     avatarUrl?: string;
     dateOfBirth?: Date;
     role: string;
+    provider?: string;
     earnedBadges: IEarnedBadge[];
     isActive: boolean;
     enrollCourse: IEnrollCourse[],
