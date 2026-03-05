@@ -1,35 +1,38 @@
-// import passport from "passport";
-// import { OIDCStrategy } from "passport-azure-ad";
-// import jwt from "jsonwebtoken";
+import passport from "passport";
+import { Strategy as MicrosoftStrategy } from "passport-microsoft";
+import { User } from "../module/user/user.model";
+import { envVers } from "./env";
 
-// passport.use(new OIDCStrategy({
-//     identityMetadata: `https://login.microsoftonline.com/${process.env.TENANT_ID}/v2.0/.well-known/openid-configuration`,
-//     clientID: process.env.CLIENT_ID,
-//     clientSecret: process.env.CLIENT_SECRET,
-//     responseType: 'code',
-//     responseMode: 'form_post',
-//     redirectUrl: process.env.REDIRECT_URI,
-//     allowHttpForRedirectUrl: true, // dev only
-//     scope: ['openid', 'profile', 'email'],
-//     validateIssuer: true,
-//     passReqToCallback: false
-// }, (iss, sub, profile, accessToken, refreshToken, done) => {
-//     if (!profile.oid) return done(new Error("No OID found"));
 
-//     // Domain restriction
-//     if (!profile._json.preferred_username.endsWith('@awcompaniesinc.com')) {
-//         return done(new Error("Unauthorized domain"));
-//     }
+passport.use(
+  new MicrosoftStrategy(
+    {
+      clientID: envVers.MICROSOFT.CLIENT_ID,
+      clientSecret: envVers.MICROSOFT.CLIENT_SECRATE,
+      callbackURL: envVers.MICROSOFT.MICROSOFT_REDIRECT_URL,
+      scope: ["user.read"],
+      tenant: "common",
+    },
+    async (accessToken: any, refreshToken: any, profile: any, done: any) => {
+      try {
+        const email = profile.emails?.[0]?.value;
 
-//     // User object
-//     const user = {
-//         id: profile.oid,
-//         name: profile.displayName,
-//         email: profile._json.preferred_username
-//     };
+        let user = await User.findOne({ email });
 
-//     return done(null, user);
-// }));
+        if (!user) {
+          user = await User.create({
+            name: profile.displayName,
+            email,
+            microsoftId: profile.id,
+          });
+        }
 
-// passport.serializeUser((user, done) => done(null, user));
-// passport.deserializeUser((user, done) => done(null, user));
+        return done(null, user);
+      } catch (err) {
+        done(err as Error, null);
+      }
+    }
+  )
+);
+
+export default passport;
