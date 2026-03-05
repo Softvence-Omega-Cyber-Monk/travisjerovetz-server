@@ -17,11 +17,13 @@ const signUp = async (data: Partial<IUser>) => {
         throw new AppError(400, `${data.email} already exists`);
     }
 
+
     const hashedPassword = await bcrypt.hash(data.password, 10);
 
     const newUser = await User.create({
         fullName: data.fullName,
         email: data.email,
+        provider: "CREADIENTIAL",
         password: hashedPassword,
         phone: data.phone
     });
@@ -48,6 +50,7 @@ const createEmployee = async (data: Partial<IUser>) => {
         fullName: data.fullName,
         email: data.email,
         password: hashedPassword,
+        provider: "CREADIENTIAL",
         phone: data.phone,
         role: IRole.EMPLOYEE
     });
@@ -61,10 +64,16 @@ const createEmployee = async (data: Partial<IUser>) => {
 const signIn = async (data: { email: string; password: string }) => {
     const { email, password } = data;
 
+    if (!email || !password) {
+        throw new AppError(400, "Email and password must be required");
+    }
+
     const user = await User.findOne({ email });
     if (!user) {
         throw new AppError(400, "Invalid email");
     }
+
+    if (user.provider === "MICROSOFT") throw new AppError(400, "Please login with microsoft. You are not creadiential user");
 
     const isPasswordMatch = await bcrypt.compare(password, user.password);
     if (!isPasswordMatch) {
@@ -85,8 +94,6 @@ const signIn = async (data: { email: string; password: string }) => {
         user: rest
     }
 };
-
-
 
 const getAllUser = async (query: Record<string, string>) => {
     // base query

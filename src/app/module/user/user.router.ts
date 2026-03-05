@@ -39,11 +39,13 @@ UserRouter.get(
       { expiresIn: "30d" }
     );
 
-    res.status(200).send({
-      success: true,
-      message: "Login success",
-      token
-    });
+    // res.status(200).send({
+    //   success: true,
+    //   message: "Login success",
+    //   token
+    // });
+    // Redirect back to your React frontend with the token
+    res.redirect(`http://localhost:5173/oauth-success?token=${token}`);
   }
 );
 
