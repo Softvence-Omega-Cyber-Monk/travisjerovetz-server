@@ -4,7 +4,7 @@ import cookieParser from "cookie-parser";
 import { notFound } from "./app/utils/notFoundRoute";
 import { moduleRoute } from "./app/route/route";
 import { globalErrorhandler } from "./app/middleware/global.error.handler";
-import passport from "../src/app/config/pasport.config"
+import passport from "./app/config/pasport.config"
 
 export const app = express();
 
