@@ -27,7 +27,7 @@ const SignUp = catchAsync(async (req: Request, res: Response, next: NextFunction
             name: result.fullName,
             email: result.email,
             password: req.body.password,
-            loginUrl: "https://travisjerovetz-frontend.vercel.app"
+            loginUrl: process.env.FRONTEND_URL || "https://learning.awcompaniesinc.com"
         }
     });
 

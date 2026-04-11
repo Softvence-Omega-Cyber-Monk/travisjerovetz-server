@@ -45,7 +45,7 @@ UserRouter.get(
     //   token
     // });
     // Redirect back to your React frontend with the token
-    res.redirect(`http://localhost:5173/oauth-success?token=${token}`);
+    res.redirect(`${process.env.FRONTEND_URL}/oauth-success?token=${token}`);
   }
 );
 
